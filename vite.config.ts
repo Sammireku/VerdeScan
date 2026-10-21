@@ -22,5 +22,10 @@ export default defineConfig(() => {
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
+    // Used by `npm start` on Render: bind to all interfaces and accept the *.onrender.com host.
+    preview: {
+      host: true,
+      allowedHosts: true,
+    },
   };
 });
