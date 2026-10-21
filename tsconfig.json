@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "types": ["vite/client"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noImplicitAny": true,
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@verdescan/shared": [
+        "./packages/shared/src/index.ts"
+      ],
+      "@verdescan/shared/*": [
+        "./packages/shared/src/*"
+      ],
+      "@verdescan/kb": [
+        "./packages/kb/src/index.ts"
+      ],
+      "@verdescan/kb/*": [
+        "./packages/kb/src/*"
+      ],
+      "@verdescan/functions": [
+        "./functions/src/index.ts"
+      ],
+      "@verdescan/functions/*": [
+        "./functions/src/*"
+      ],
+      "@verdescan/eval": [
+        "./packages/eval/src/runner.ts"
+      ],
+      "@verdescan/eval/*": [
+        "./packages/eval/src/*"
+      ]
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "exclude": ["dist"]
+}

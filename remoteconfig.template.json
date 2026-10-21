@@ -1,0 +1,74 @@
+{
+  "parameters": {
+    "ai_model_diagnosis": {
+      "defaultValue": {
+        "value": "gemini-1.5-flash"
+      },
+      "description": "Primary Gemini model ID used by the orchestrator",
+      "valueType": "STRING"
+    },
+    "ai_model_fallback": {
+      "defaultValue": {
+        "value": "gemini-1.5-flash-8b"
+      },
+      "description": "Fallback model ID if primary model fails or is retired",
+      "valueType": "STRING"
+    },
+    "ai_max_output_tokens": {
+      "defaultValue": {
+        "value": "1024"
+      },
+      "description": "Output token cap per diagnosis",
+      "valueType": "NUMBER"
+    },
+    "ai_temperature": {
+      "defaultValue": {
+        "value": "0.2"
+      },
+      "description": "Diagnostic temperature for stability",
+      "valueType": "NUMBER"
+    },
+    "diag_free_monthly_limit": {
+      "defaultValue": {
+        "value": "20"
+      },
+      "description": "Free-tier diagnoses per user per month",
+      "valueType": "NUMBER"
+    },
+    "diag_image_max_px": {
+      "defaultValue": {
+        "value": "1024"
+      },
+      "description": "Longest image edge after client compression",
+      "valueType": "NUMBER"
+    },
+    "diag_min_confidence_answer": {
+      "defaultValue": {
+        "value": "0.55"
+      },
+      "description": "Confidence threshold below which the app asks follow-ups instead of asserting cause",
+      "valueType": "NUMBER"
+    },
+    "diag_pipeline_mode": {
+      "defaultValue": {
+        "value": "two_stage"
+      },
+      "description": "Pipeline execution mode: two_stage (observe then reason) or single",
+      "valueType": "STRING"
+    },
+    "feature_outbreak_map": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Feature flag for community outbreak map",
+      "valueType": "BOOLEAN"
+    },
+    "kb_version": {
+      "defaultValue": {
+        "value": "v1.0.0"
+      },
+      "description": "Active knowledge-base content version",
+      "valueType": "STRING"
+    }
+  }
+}

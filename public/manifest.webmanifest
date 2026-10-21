@@ -1,0 +1,35 @@
+{
+  "name": "VerdeScan",
+  "short_name": "VerdeScan",
+  "description": "Offline-first plant disease diagnosis and agronomy guidance",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbfbfa",
+  "theme_color": "#166534",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166534'/><text y='.9em' font-size='70' x='15'>🌿</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New diagnosis",
+      "short_name": "Diagnose",
+      "url": "/?tab=diagnose"
+    },
+    {
+      "name": "My Garden",
+      "short_name": "Garden",
+      "url": "/?tab=garden"
+    },
+    {
+      "name": "Guides",
+      "short_name": "Guides",
+      "url": "/?tab=guides"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+[
+  {
+    "id": "gold-tom-001",
+    "imagePaths": ["/assets/golden/tom-early-blight-01.jpg"],
+    "parts": ["leaf"],
+    "cropId": "tomato",
+    "context": {
+      "cropId": "tomato",
+      "symptomsText": "Brown spots on lower leaves with dark concentric rings",
+      "daysSinceSymptoms": 4,
+      "recentWeather": "wet",
+      "wateringFrequency": "daily"
+    },
+    "expectedProblemIds": ["tomato-early-blight"],
+    "category": "disease",
+    "difficulty": "clear",
+    "region": "GH",
+    "labelledBy": "expert-mireku-csir",
+    "licence": "CC-BY-4.0"
+  },
+  {
+    "id": "gold-tom-002",
+    "imagePaths": ["/assets/golden/tom-septoria-01.jpg"],
+    "parts": ["leaf"],
+    "cropId": "tomato",
+    "context": {
+      "cropId": "tomato",
+      "symptomsText": "Tiny circular spots with black specks in gray center",
+      "daysSinceSymptoms": 6,
+      "recentWeather": "hot",
+      "wateringFrequency": "weekly"
+    },
+    "expectedProblemIds": ["tomato-septoria-leaf-spot"],
+    "category": "disease",
+    "difficulty": "clear",
+    "region": "GH",
+    "labelledBy": "expert-mireku-csir",
+    "licence": "CC-BY-4.0"
+  },
+  {
+    "id": "gold-pep-001",
+    "imagePaths": ["/assets/golden/pep-aphids-01.jpg"],
+    "parts": ["leaf"],
+    "cropId": "pepper",
+    "context": {
+      "cropId": "pepper",
+      "symptomsText": "Tiny green insects clustered under curled young leaves with black mold",
+      "daysSinceSymptoms": 2,
+      "recentWeather": "hot"
+    },
+    "expectedProblemIds": ["aphids-general"],
+    "category": "pest",
+    "difficulty": "clear",
+    "region": "GH",
+    "labelledBy": "expert-mireku-csir",
+    "licence": "CC-BY-4.0"
+  },
+  {
+    "id": "gold-mze-001",
+    "imagePaths": ["/assets/golden/mze-faw-01.jpg"],
+    "parts": ["leaf"],
+    "cropId": "maize",
+    "context": {
+      "cropId": "maize",
+      "symptomsText": "Ragged holes in whorl leaves with sawdust-like frass deposits",
+      "daysSinceSymptoms": 3,
+      "recentWeather": "mixed"
+    },
+    "expectedProblemIds": ["fall-armyworm"],
+    "category": "pest",
+    "difficulty": "clear",
+    "region": "GH",
+    "labelledBy": "expert-mireku-csir",
+    "licence": "CC-BY-4.0"
+  },
+  {
+    "id": "gold-cas-001",
+    "imagePaths": ["/assets/golden/cas-mosaic-01.jpg"],
+    "parts": ["leaf"],
+    "cropId": "cassava",
+    "context": {
+      "cropId": "cassava",
+      "symptomsText": "Yellow and green mosaic patches with severely curled distorted leaf blades",
+      "daysSinceSymptoms": 14,
+      "recentWeather": "hot"
+    },
+    "expectedProblemIds": ["cassava-mosaic-disease"],
+    "category": "disease",
+    "difficulty": "clear",
+    "region": "GH",
+    "labelledBy": "expert-mireku-csir",
+    "licence": "CC-BY-4.0"
+  },
+  {
+    "id": "gold-neg-001",
+    "imagePaths": ["/assets/golden/person-face.jpg"],
+    "parts": ["whole"],
+    "cropId": "tomato",
+    "context": {
+      "symptomsText": "My friend in the garden"
+    },
+    "expectedProblemIds": [],
+    "category": "unknown",
+    "difficulty": "clear",
+    "region": "GH",
+    "labelledBy": "expert-mireku-csir",
+    "licence": "CC-BY-4.0"
+  }
+]

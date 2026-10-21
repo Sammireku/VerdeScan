@@ -1,0 +1,36 @@
+{
+  "app": {
+    "title": "VerdeScan",
+    "tagline": "Offline-First Agronomy Diagnosis & Guides"
+  },
+  "diagnosis": {
+    "firstLineGuidance": "This diagnosis is first-line guidance. For high-stakes decisions, consult your local agronomy extension officer.",
+    "newScan": "New Scan",
+    "capturePrompt": "Take clear photos of the symptom and the whole plant in daylight.",
+    "analyzing": "Analyzing symptoms with agronomic knowledge base...",
+    "confidence": "Confidence",
+    "evidence": "Observed Evidence",
+    "rulesOut": "Separating Indicators",
+    "treatments": "Vetted Treatments",
+    "safety": "Safety Notes"
+  },
+  "errors": {
+    "AUTH_REQUIRED": "Sign in is required to continue.",
+    "LIMIT_REACHED": "Monthly diagnosis limit reached. You can still browse cached guides and history.",
+    "INVALID_INPUT": "Invalid diagnosis request. Please review your input.",
+    "IMAGES_MISSING": "Could not locate uploaded photos. Please retry.",
+    "IMAGE_INVALID": "Unsupported image format or image too large. Please select a valid photo.",
+    "IMAGE_HAS_GPS": "Privacy notice: Image contained location tags and was safely re-encoded.",
+    "IMAGE_LOW_QUALITY": "The photo was blurry or dark. Try taking a photo in daylight.",
+    "MODEL_UNAVAILABLE": "Diagnosis service is currently unreachable. Diagnosis has been queued offline.",
+    "KB_EMPTY": "No matching conditions found in knowledge base for this crop.",
+    "INTERNAL": "An unexpected error occurred. Please try again."
+  },
+  "nav": {
+    "diagnose": "Diagnose",
+    "garden": "My Garden",
+    "guides": "Guides",
+    "search": "Search",
+    "settings": "Settings"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "common": {
+    "appName": "VerdeScan",
+    "appTagline": "Crop Disease & Pest AI",
+    "online": "Online",
+    "workingOffline": "Working Offline",
+    "installApp": "Install App",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "retry": "Retry",
+    "delete": "Delete",
+    "loading": "Analyzing with 2-Stage Agronomy AI..."
+  },
+  "nav": {
+    "scan": "Scan",
+    "garden": "My Garden",
+    "guides": "Guides",
+    "search": "Search",
+    "settings": "Settings"
+  },
+  "home": {
+    "heroTitle": "What is affecting your crops today?",
+    "heroSub": "Identify plant diseases, pests, and nutrient deficiencies with offline field AI.",
+    "scanCardTitle": "Scan Crop Problem",
+    "scanCardSub": "Identify diseases, pests, and deficiencies.",
+    "startScan": "Start Scan",
+    "uploadPhoto": "Upload Photo",
+    "quickActions": "Quick Farm Actions",
+    "guidesAction": "Guides (Offline cached)",
+    "gardenAction": "My Garden",
+    "historyAction": "History"
+  },
+  "banners": {
+    "offline": "Working with saved content",
+    "offlineSub": "You are offline. Scans are saved safely on your device; guides and past diagnoses are fully accessible.",
+    "updateAvailable": "A new version of VerdeScan is available.",
+    "updateAction": "Update now",
+    "dismiss": "Later",
+    "disclaimer": "First-line decision guidance only. Consult your local agronomy extension officer for commercial or chemical interventions."
+  },
+  "diagnose": {
+    "camera": {
+      "launchCamera": "Start Camera",
+      "chooseFile": "Upload File",
+      "cameraUnavailable": "Camera access unavailable. Please choose an image to upload.",
+      "leafFocus": "Focus on affected leaf",
+      "wholePlant": "Capture whole plant canopy",
+      "daylight": "Ensure good daylight (no flash)",
+      "blurryWarning": "Photo is blurry. Tap to retake.",
+      "darkWarning": "Photo is dark. Tap to retake in daylight.",
+      "sharpPhoto": "Sharp daylight photo",
+      "photosCount": "of 4 photos attached",
+      "partLeaf": "Leaf",
+      "partStem": "Stem",
+      "partFruit": "Fruit",
+      "partFlower": "Flower",
+      "partRoot": "Root",
+      "partWhole": "Whole Plant",
+      "selectCrop": "Select Crop",
+      "symptomsLabel": "Describe What You See",
+      "symptomsPlaceholder": "e.g. Dark spots with rings, yellow leaves, small crawling insects...",
+      "daysSince": "Days of Signs",
+      "weather": "Weather",
+      "watering": "Watering",
+      "submitOnline": "Diagnose Plant Health Now",
+      "submitOffline": "Queue Scan (Offline Mode)"
+    },
+    "result": {
+      "likelyProblem": "Likely Problem",
+      "confidence": "Confidence",
+      "whatISaw": "What I saw",
+      "safetyNote": "Safety Note",
+      "safetyConsult": "Consult local expert for chemicals.",
+      "whatToDoNow": "What to do now",
+      "helpful": "Helpful",
+      "notHelpful": "Not Helpful",
+      "readAloud": "Read",
+      "stopReading": "Stop",
+      "firstLineGuidance": "First-line guidance notice: This diagnosis is decision support based on reviewed agronomy. For high-stakes decisions, consult your extension officer.",
+      "noMatchTitle": "No Definite Disease Matched",
+      "noMatchDesc": "The photo did not match known priority crop diseases with sufficient confidence. Try retaking a steady close-up in open daytime light.",
+      "retake": "Take Another Photo",
+      "startNewScan": "Start New Scan"
+    }
+  },
+  "queue": {
+    "pendingTitle": "Waiting for connection...",
+    "pendingCount": "pending scan(s) in queue syncing with cloud...",
+    "autoSync": "Syncs automatically when connection returns",
+    "offlineChecklist": "Offline Checklist of likely causes",
+    "attempts": "Attempts",
+    "syncNow": "Sync Now"
+  },
+  "garden": {
+    "title": "My Farm & Crops",
+    "sub": "Track crop plots, soil methods, and previous AI diagnosis records.",
+    "addPlot": "Add Crop Plot",
+    "healthy": "In Monitoring",
+    "historyTitle": "Offline Scan History (Dexie IndexedDB)",
+    "noHistory": "No past scans recorded yet. Run a diagnosis under the Scan tab to build your plant health history."
+  },
+  "guides": {
+    "title": "Curated Guides & Skills",
+    "sub": "Regrow crops from kitchen scraps, build drought-resilient container gardens, and master organic composting.",
+    "offlineCached": "100% Offline-Cached",
+    "plasticSafetyTitle": "Mandatory Food-Safety Callout: Recycled Plastics (Section 10)",
+    "plasticFoodGrade": "Strictly use plastic containers marked with Resin Identification Code 1 (PET) or 2 (HDPE) that held drinking water or edible oils.",
+    "plasticWarning": "PROHIBITION: Never use containers that previously held motor oils, brake fluid, engine coolants, pesticides, or industrial solvents."
+  },
+  "settings": {
+    "title": "App Settings & Privacy",
+    "sub": "Manage interface language, privacy consent, export your records, or run golden evaluation benchmarks.",
+    "language": "Language & Regional Voice (i18n)",
+    "privacy": "Privacy & Model Improvement (Section 5)",
+    "exportData": "Data Rights (exportMyData & deleteAccount)",
+    "eval": "Golden-Set Benchmark (pnpm eval)"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "version": "calib-v1",
+  "fittedAt": "2026-10-20T03:00:00Z",
+  "mapping": [
+    { "rawConfidence": 0.0, "calibratedAccuracy": 0.0 },
+    { "rawConfidence": 0.3, "calibratedAccuracy": 0.28 },
+    { "rawConfidence": 0.55, "calibratedAccuracy": 0.54 },
+    { "rawConfidence": 0.75, "calibratedAccuracy": 0.76 },
+    { "rawConfidence": 0.85, "calibratedAccuracy": 0.86 },
+    { "rawConfidence": 0.95, "calibratedAccuracy": 0.96 },
+    { "rawConfidence": 1.0, "calibratedAccuracy": 0.99 }
+  ]
+}

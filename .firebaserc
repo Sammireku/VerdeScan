@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "verdescan-dev",
+    "dev": "verdescan-dev",
+    "staging": "verdescan-staging",
+    "prod": "verdescan-prod"
+  }
+}

@@ -1,0 +1,54 @@
+/* T-007 / UI-001: Verdant Earth Design Tokens (Section 9) */
+:root {
+  /* Verdant Earth Palette - Optimized for outdoor sunlight readability */
+  --color-primary: #2D6A4F;       /* Deep forest green (Primary actions) */
+  --color-primary-hover: #1b4332;
+  --color-primary-soft: #D8F3DC;  /* Soft green (Selected states, chips) */
+  --color-bg: #FAFAF5;            /* Warm off-white (Reduces glare vs pure white) */
+  --color-surface: #FFFFFF;       /* Cards and sheets */
+  --color-surface-subtle: #F2F2EC;
+  --color-border: #E5E5DC;
+  --color-text: #1B1B1B;          /* Primary text */
+  --color-text-muted: #5A6B5E;    /* Secondary text */
+  --color-warning: #E09F3E;       /* Harvest amber (Needs-info, pending, safety) */
+  --color-danger: #BC4749;        /* Earth red (Errors, flagged) */
+  --color-success: #40916C;       /* Healthy, complete */
+
+  /* Touch Targets: STRICT minimum 44x44px for all interactive elements */
+  --touch-target-min: 44px;
+
+  /* Typography */
+  --font-family-ui: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #52B788;
+    --color-primary-hover: #40916c;
+    --color-primary-soft: #1B4332;
+    --color-bg: #1A1A1A;
+    --color-surface: #252525;
+    --color-surface-subtle: #2d2d2d;
+    --color-border: #383838;
+    --color-text: #F5F5F0;
+    --color-text-muted: #A3B18A;
+  }
+}
+
+/* UI-001: Strict minimum 44px touch targets utility */
+.touch-target {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Enforce on interactive elements for field usability */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+select {
+  min-height: var(--touch-target-min);
+}

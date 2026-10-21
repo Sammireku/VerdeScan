@@ -1,0 +1,45 @@
+// T-002 / T-004: Firestore Security Rules (Section 5)
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function isReviewer() { return signedIn() && request.auth.token.role in ['reviewer', 'admin']; }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.role == 'grower'
+        && request.resource.data.plan == 'free';
+      allow update: if isOwner(uid)
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.plan == resource.data.plan;
+      allow delete: if false; // deletion handled by deleteAccount function
+
+      match /plants/{plantId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      match /diagnoses/{diagnosisId} {
+        allow read: if isOwner(uid);
+        allow update: if isOwner(uid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['userFeedback']);
+        allow create, delete: if false; // created by createDiagnosis function
+      }
+
+      match /usage/{month} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+    }
+
+    match /kb_crops/{id} { allow read: if true; allow write: if false; }
+    match /kb_problems/{id} { allow read: if true; allow write: if false; }
+    match /kb_treatments/{id} { allow read: if true; allow write: if false; }
+    match /kb_guides/{id} { allow read: if true; allow write: if false; }
+    match /kb_chunks/{id} { allow read, write: if false; } // server only
+    match /reports/{id} { allow read, write: if false; } // server only
+    match /expertReviews/{id} { allow read, write: if isReviewer(); }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@verdescan/kb",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "validate": "tsx scripts/validate.ts",
+    "seed": "tsx scripts/seed.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@verdescan/shared": "workspace:*",
+    "zod": "^3.24.2"
+  }
+}
