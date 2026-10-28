@@ -91,15 +91,30 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
-      <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl border border-[#E6EBE4] max-h-[92vh] overflow-y-auto">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl border border-[#E6EBE4] max-h-[92vh] overflow-y-auto cursor-default"
+      >
         {/* Header with App Logo */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex items-center gap-3 text-left hover:opacity-90 transition-opacity cursor-pointer"
+            title="VerdeScan Home"
+          >
             <img
               src="/assets/aistudio/Gemini_Generated_Image_qaoaufqaoaufqaoa_7088432d.jpeg"
               alt="VerdeScan Logo"
-              className="w-10 h-10 object-contain rounded-xl border border-[#E6EBE4] p-0.5"
+              className="w-10 h-10 object-contain rounded-xl border border-[#E6EBE4] p-0.5 shadow-2xs"
             />
             <div>
               <h3 className="font-extrabold text-base text-[#19201D] leading-tight">
@@ -109,7 +124,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 Sync crop health, garden plots, and diagnosis history
               </p>
             </div>
-          </div>
+          </button>
 
           <button
             type="button"

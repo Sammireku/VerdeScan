@@ -36,8 +36,21 @@ export function ScanModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
-      <div className="bg-[#F6F8F5] w-full max-w-lg h-[92vh] sm:h-[88vh] rounded-t-3xl sm:rounded-3xl flex flex-col shadow-2xl overflow-hidden border border-[#E6EBE4]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-[#F6F8F5] w-full max-w-lg h-[92vh] sm:h-[88vh] rounded-t-3xl sm:rounded-3xl flex flex-col shadow-2xl overflow-hidden border border-[#E6EBE4] cursor-default"
+      >
+        {/* Bottom Sheet Grab Handle for mobile gesture ergonomics */}
+        <div className="w-12 h-1.5 rounded-full bg-stone-300 mx-auto my-2 shrink-0 sm:hidden" />
+
         {/* Modal Top Bar */}
         <div className="bg-white border-b border-[#E6EBE4] px-4 py-3 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">

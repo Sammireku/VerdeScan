@@ -402,3 +402,38 @@ export const HarvestTrackerSchema = z.object({
   storageConditions: z.string(),
 });
 export type HarvestTracker = z.infer<typeof HarvestTrackerSchema>;
+
+// T-026: Soil Moisture Sensor IoT Telemetry & Proactive Alerts
+export const MoistureStatusSchema = z.enum(['optimal', 'adequate', 'low', 'critical']);
+export type MoistureStatus = z.infer<typeof MoistureStatusSchema>;
+
+export const SoilSensorReadingSchema = z.object({
+  sensorId: z.string(),
+  cropId: z.string(),
+  cropName: z.string(),
+  plotName: z.string(),
+  vwcPercentage: z.number().min(0).max(100),
+  minOptimalThreshold: z.number().min(0).max(100),
+  criticalThreshold: z.number().min(0).max(100),
+  soilTempC: z.number().optional(),
+  electricalConductivity: z.number().optional(),
+  batteryLevel: z.number().min(0).max(100).optional(),
+  lastUpdated: z.string(),
+  status: MoistureStatusSchema,
+});
+export type SoilSensorReading = z.infer<typeof SoilSensorReadingSchema>;
+
+export const SoilMoistureAlertSchema = z.object({
+  id: z.string(),
+  sensorId: z.string(),
+  cropName: z.string(),
+  plotName: z.string(),
+  currentVwc: z.number(),
+  targetVwc: z.number(),
+  urgency: z.enum(['critical', 'warning']),
+  timestamp: z.string(),
+  recommendedWaterLiters: z.number(),
+  dismissed: z.boolean(),
+});
+export type SoilMoistureAlert = z.infer<typeof SoilMoistureAlertSchema>;
+

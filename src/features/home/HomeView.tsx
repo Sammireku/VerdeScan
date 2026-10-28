@@ -30,6 +30,9 @@ import {
 import { KB_CROPS, KB_PROBLEMS, KB_GUIDES } from '@verdescan/kb';
 import { WeatherWidget } from '../../components/WeatherWidget';
 import { WeatherAlertBanner } from '../../components/WeatherAlertBanner';
+import { SoilMoistureMonitor } from './SoilMoistureMonitor';
+import { GardenVitalSignsCarousel } from './GardenVitalSignsCarousel';
+import { triggerHaptic } from '../../lib/haptics';
 import { useAuth } from '../../lib/auth';
 
 export interface HomeViewProps {
@@ -47,6 +50,9 @@ export interface HomeViewProps {
   onOpenReport?: () => void;
   onOpenCalculator?: () => void;
   onOpenHarvest?: () => void;
+  onGoHome?: () => void;
+  isSunlightMode?: boolean;
+  onToggleSunlightMode?: () => void;
 }
 
 type SearchFilterTab = 'all' | 'plants' | 'diseases' | 'resources';
@@ -66,12 +72,17 @@ export function HomeView({
   onOpenReport,
   onOpenCalculator,
   onOpenHarvest,
+  onGoHome,
+  isSunlightMode = false,
+  onToggleSunlightMode,
 }: HomeViewProps) {
   const { currentUser } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchTab, setSearchTab] = useState<SearchFilterTab>('all');
 
-  const displayName = currentUser?.name || 'Ryan Schentzer';
+  const displayName = currentUser?.name
+    ? currentUser.name.trim().split(' ')[0]
+    : 'User';
 
   // Multi-entity search across Plants, Diseases, and Resources
   const searchResults = useMemo(() => {
@@ -222,14 +233,25 @@ export function HomeView({
         {/* User Greeting, App Logo & Settings / Profile Buttons */}
         <div className="flex items-start justify-between relative z-10">
           <div className="flex items-center gap-3">
-            {/* App Logo from user upload */}
-            <div className="w-11 h-11 rounded-2xl bg-white p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0">
+            {/* App Logo from user upload - Clicking redirects to Home */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('tap');
+                setSearchQuery('');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (onGoHome) onGoHome();
+              }}
+              className="w-11 h-11 rounded-2xl bg-white p-1 shadow-md border border-white/20 flex items-center justify-center shrink-0 cursor-pointer active:scale-95 transition-transform"
+              title="VerdeScan Home"
+              aria-label="VerdeScan Home"
+            >
               <img
                 src="/assets/aistudio/Gemini_Generated_Image_qaoaufqaoaufqaoa_7088432d.jpeg"
                 alt="VerdeScan Logo"
                 className="w-full h-full object-contain"
               />
-            </div>
+            </button>
             <div>
               <p className="text-xs text-white/75 font-medium">Welcome back!</p>
               <button
@@ -246,6 +268,28 @@ export function HomeView({
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Sunlight / Outdoor High-Contrast Mode Toggle */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('tap');
+                onToggleSunlightMode?.();
+              }}
+              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-xs backdrop-blur-md active:scale-95 transition-all touch-target ${
+                isSunlightMode
+                  ? 'bg-[#78C441] text-[#122B1E] ring-2 ring-white font-black'
+                  : 'bg-white/15 hover:bg-white/25 text-white'
+              }`}
+              title={
+                isSunlightMode
+                  ? 'Sunlight Mode Active (Tap to disable)'
+                  : 'Enable High-Contrast Outdoor Mode'
+              }
+              aria-label="Toggle High-Contrast Outdoor Mode"
+            >
+              <Sun className={`w-4 h-4 ${isSunlightMode ? 'fill-current' : ''}`} />
+            </button>
+
             {/* Account / Auth Button */}
             <button
               type="button"
@@ -453,8 +497,21 @@ export function HomeView({
         {/* GEOLOCATION LOCAL WEATHER WIDGET (with Auto & Manual Setting) */}
         <WeatherWidget />
 
+        {/* 1. GARDEN VITAL SIGNS & DTM CAROUSEL (Vitality Rings & Moisture glance) */}
+        <GardenVitalSignsCarousel
+          onOpenHarvest={onOpenHarvest}
+          onOpenRecovery={onOpenRecovery}
+          isSunlightMode={isSunlightMode}
+        />
+
+        {/* 2. REAL-TIME SOIL MOISTURE TELEMETRY & PROACTIVE PUSH ALERTS */}
+        <SoilMoistureMonitor
+          onOpenWateringGuide={onOpenPlantCare}
+          isSunlightMode={isSunlightMode}
+        />
+
         {/* Card 1: Identify */}
-        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-[#E6EBE4] shadow-xs flex items-center justify-between gap-3 hover:border-[#78C441]/40 transition-all">
+        <div className={`bg-white rounded-3xl p-4 sm:p-5 border shadow-xs flex items-center justify-between gap-3 hover:border-[#78C441]/40 transition-all ${isSunlightMode ? 'border-2 border-stone-800' : 'border-[#E6EBE4]'}`}>
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-[#FFF0EB] flex items-center justify-center shrink-0">
               <Leaf className="w-6 h-6 text-[#FF7F50]" />

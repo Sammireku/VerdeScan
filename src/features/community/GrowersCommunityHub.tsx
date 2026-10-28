@@ -389,10 +389,18 @@ export function GrowersCommunityHub({ onClose }: GrowersCommunityHubProps) {
 
       {/* Share Idea / Tip Modal */}
       {isShareModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsShareModalOpen(false);
+            }
+          }}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 cursor-pointer animate-in fade-in"
+        >
           <form
+            onClick={(e) => e.stopPropagation()}
             onSubmit={handleCreatePost}
-            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto cursor-default"
           >
             <div className="flex items-center justify-between border-b border-[#E6EBE4] pb-3">
               <div>

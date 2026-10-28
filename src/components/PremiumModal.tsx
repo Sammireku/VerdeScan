@@ -19,8 +19,18 @@ export function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
-      <div className="bg-[#182635] text-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl border border-white/10">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-[#182635] text-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl border border-white/10 cursor-default"
+      >
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-2xl bg-[#FF7F50] text-white flex items-center justify-center shadow-md">

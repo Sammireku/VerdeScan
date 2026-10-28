@@ -50,6 +50,27 @@ function MainAppShell() {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [isHarvestOpen, setIsHarvestOpen] = useState(false);
 
+  // High-Contrast Outdoor Sunlight Mode State
+  const [isSunlightMode, setIsSunlightMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('verdescan_sunlight_mode') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleSunlightMode = () => {
+    setIsSunlightMode((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('verdescan_sunlight_mode', String(next));
+      } catch {
+        // Ignore
+      }
+      return next;
+    });
+  };
+
   const { locale, setLocale } = useLocale();
 
   useEffect(() => {
@@ -87,8 +108,23 @@ function MainAppShell() {
     setIsCalculatorOpen(false);
   };
 
+  const handleGoHome = () => {
+    closeAllSubviews();
+    setIsReportOpen(false);
+    setIsHarvestOpen(false);
+    setIsScanOpen(false);
+    setIsPremiumOpen(false);
+    setIsAuthOpen(false);
+    setActiveTab('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <PhoneFrame isOnline={isOnline} queuedCount={queuedItems.length}>
+    <PhoneFrame
+      isOnline={isOnline}
+      queuedCount={queuedItems.length}
+      isSunlightMode={isSunlightMode}
+    >
       {/* UpdateBanner (suppressed during active capture) */}
       <UpdateBanner isCapturing={isScanOpen} />
 
@@ -162,6 +198,9 @@ function MainAppShell() {
                 onOpenReport={() => setIsReportOpen(true)}
                 onOpenCalculator={() => setIsCalculatorOpen(true)}
                 onOpenHarvest={() => setIsHarvestOpen(true)}
+                onGoHome={handleGoHome}
+                isSunlightMode={isSunlightMode}
+                onToggleSunlightMode={toggleSunlightMode}
                 onOpenBotanist={() => {
                   closeAllSubviews();
                   setActiveTab('ai_expert');
@@ -211,6 +250,10 @@ function MainAppShell() {
       <HarvestTrackerModal
         isOpen={isHarvestOpen}
         onClose={() => setIsHarvestOpen(false)}
+        onNavigateToPlants={() => {
+          closeAllSubviews();
+          setActiveTab('plants');
+        }}
       />
 
       {/* Full-Screen Scan / Camera Wizard Modal (with First Attached Image UI) */}

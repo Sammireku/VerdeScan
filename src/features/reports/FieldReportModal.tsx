@@ -20,6 +20,8 @@ import {
 import { type FieldScoutingReport } from '@verdescan/shared';
 import { useVoiceDictation } from '../../lib/speech';
 
+import { useAuth } from '../../lib/auth';
+
 interface FieldReportModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,12 +35,13 @@ export function FieldReportModal({
   defaultCrop = 'Roma Tomato (Plot B)',
   defaultDiagnosis = 'Early Blight (Alternaria solani)',
 }: FieldReportModalProps) {
+  const { currentUser } = useAuth();
   const [report, setReport] = useState<FieldScoutingReport>(() => {
     return {
       id: `rep-${Date.now()}`,
       reportNumber: `VS-AGRO-${Math.floor(100000 + Math.random() * 900000)}`,
       farmOrPlotName: 'Green Valley Organic Basin - Plot 4',
-      scoutName: 'Ryan Schentzer (Agronomy Lead)',
+      scoutName: currentUser ? `${currentUser.name} (Agronomy Lead)` : 'Certified Field Scout',
       inspectionDate: new Date().toISOString().split('T')[0],
       cropName: defaultCrop,
       cropVariety: 'Determinate Plum',
@@ -92,8 +95,21 @@ export function FieldReportModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/60 backdrop-blur-xs overflow-y-auto">
-      <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[92vh] flex flex-col">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/60 backdrop-blur-xs overflow-y-auto cursor-pointer animate-in fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[92vh] flex flex-col cursor-default"
+      >
+        {/* Tactile Grab Handle Bar */}
+        <div className="w-12 h-1.5 rounded-full bg-slate-300 mx-auto my-2 shrink-0 sm:hidden print:hidden" />
+
         {/* Modal Top Bar */}
         <div className="bg-[#1A3B29] text-white px-5 py-4 flex items-center justify-between shrink-0 print:hidden">
           <div className="flex items-center gap-2.5">

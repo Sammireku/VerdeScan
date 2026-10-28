@@ -707,10 +707,18 @@ export function PlantsView({ onOpenScan }: PlantsViewProps) {
 
       {/* MODAL 1: ADD PLANT (Dedicated for individual plants/crops) */}
       {isAddPlantModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsAddPlantModalOpen(false);
+            }
+          }}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 cursor-pointer animate-in fade-in"
+        >
           <form
+            onClick={(e) => e.stopPropagation()}
             onSubmit={handleAddPlantSubmit}
-            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto cursor-default"
           >
             <div className="flex items-center justify-between border-b border-[#E6EBE4] pb-3">
               <div>
@@ -844,10 +852,18 @@ export function PlantsView({ onOpenScan }: PlantsViewProps) {
 
       {/* MODAL 2: ADD ROOM / PLOT (Distinct dedicated form tailored for garden spaces) */}
       {isAddPlotModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsAddPlotModalOpen(false);
+            }
+          }}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 cursor-pointer animate-in fade-in"
+        >
           <form
+            onClick={(e) => e.stopPropagation()}
             onSubmit={handleAddPlotSubmit}
-            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto animate-in fade-in slide-in-from-bottom-3"
+            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto animate-in fade-in slide-in-from-bottom-3 cursor-default"
           >
             <div className="flex items-center justify-between border-b border-[#E6EBE4] pb-3">
               <div className="flex items-center gap-2">
@@ -971,10 +987,18 @@ export function PlantsView({ onOpenScan }: PlantsViewProps) {
 
       {/* MODAL 3: ADD REMINDER */}
       {isReminderModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsReminderModalOpen(false);
+            }
+          }}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 cursor-pointer animate-in fade-in"
+        >
           <form
+            onClick={(e) => e.stopPropagation()}
             onSubmit={handleAddReminderSubmit}
-            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-4 shadow-2xl"
+            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 space-y-4 shadow-2xl cursor-default"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-base font-extrabold text-[#19201D]">Add Care Reminder</h3>

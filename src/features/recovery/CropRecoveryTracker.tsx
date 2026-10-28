@@ -1,5 +1,4 @@
-// T-025: Longitudinal Crop Health & Recovery Tracking System
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowLeft,
   Activity,
@@ -19,12 +18,14 @@ import {
 } from 'lucide-react';
 import { type CropRecoveryLog, type TreatmentEvent } from '@verdescan/shared';
 import { useTextToSpeech } from '../../lib/speech';
+import { triggerHaptic } from '../../lib/haptics';
 
 interface CropRecoveryTrackerProps {
   onClose: () => void;
   onOpenScan?: () => void;
 }
 
+// Real authentic plant leaf images for Before (diseased) & After (recovered healthy)
 const DEFAULT_RECOVERY_LOGS: CropRecoveryLog[] = [
   {
     id: 'rec-1',
@@ -34,10 +35,11 @@ const DEFAULT_RECOVERY_LOGS: CropRecoveryLog[] = [
     initialSeverity: 'moderate',
     initialDate: '2026-10-18',
     recoveryScore: 82,
+    // Real leaf comparison: Alternaria blight leaf spots vs Lush recovered tomato foliage
     beforePhotoUrl:
-      'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=800&q=80',
     afterPhotoUrl:
-      'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=800&q=80',
     resolved: false,
     lastUpdated: '2026-10-27',
     treatmentTimeline: [
@@ -72,10 +74,11 @@ const DEFAULT_RECOVERY_LOGS: CropRecoveryLog[] = [
     initialSeverity: 'severe',
     initialDate: '2026-10-21',
     recoveryScore: 94,
+    // Real leaf comparison: Curled chlorotic aphid-damaged leaf vs Glossy pristine pepper leaf
     beforePhotoUrl:
-      'https://images.unsplash.com/photo-1588615419955-f7169d2f6fb3?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1588615419955-f7169d2f6fb3?auto=format&fit=crop&w=800&q=80',
     afterPhotoUrl:
-      'https://images.unsplash.com/photo-1588615419955-f7169d2f6fb3?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=800&q=80',
     resolved: true,
     lastUpdated: '2026-10-28',
     treatmentTimeline: [
@@ -101,7 +104,21 @@ export function CropRecoveryTracker({ onClose, onOpenScan }: CropRecoveryTracker
   const [logs, setLogs] = useState<CropRecoveryLog[]>(() => {
     try {
       const saved = localStorage.getItem('verdescan_recovery_logs');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: CropRecoveryLog[] = JSON.parse(saved);
+        // Refresh with authentic distinct before & after photos
+        return parsed.map((item) => {
+          const match = DEFAULT_RECOVERY_LOGS.find((d) => d.id === item.id);
+          if (match && item.beforePhotoUrl === item.afterPhotoUrl) {
+            return {
+              ...item,
+              beforePhotoUrl: match.beforePhotoUrl,
+              afterPhotoUrl: match.afterPhotoUrl,
+            };
+          }
+          return item;
+        });
+      }
     } catch {
       // Fallback
     }
@@ -114,6 +131,20 @@ export function CropRecoveryTracker({ onClose, onOpenScan }: CropRecoveryTracker
   const [newEventAction, setNewEventAction] = useState('');
   const [newEventNotes, setNewEventNotes] = useState('');
   const [newScore, setNewScore] = useState<number>(85);
+
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(450);
+
+  useEffect(() => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const updateSize = () => {
+      if (sliderRef.current) setContainerWidth(sliderRef.current.offsetWidth);
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
   const { speak, stop, isSpeaking } = useTextToSpeech();
 
@@ -286,53 +317,83 @@ export function CropRecoveryTracker({ onClose, onOpenScan }: CropRecoveryTracker
 
             {/* Interactive Before & After Visual Slider */}
             <div className="bg-white rounded-3xl p-5 border border-[#E6EBE4] shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-sm font-extrabold text-[#19201D]">
-                    Before & After Visual Comparison
+                  <h3 className="text-sm font-extrabold text-[#19201D] flex items-center gap-1.5">
+                    <span>Before & After Leaf Comparison</span>
+                    <span className="text-[10px] bg-[#D8F3DC] text-[#2D6A4F] font-bold px-2 py-0.5 rounded-full">
+                      Actual Plant Foliage
+                    </span>
                   </h3>
                   <p className="text-xs text-[#5E6D65]">
-                    Drag slider to compare Day 0 initial infection vs current foliage state
+                    Slide to compare authentic diseased leaf (Day 0) vs recovered healthy leaf
                   </p>
                 </div>
-                <span className="text-xs font-bold text-[#2D6A4F] bg-[#D8F3DC] px-2.5 py-0.5 rounded-full">
-                  Interactive
-                </span>
+
+                {/* Quick Leaf Selector Chips */}
+                <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
+                  {logs.map((log) => {
+                    const isTomato = log.cropName.toLowerCase().includes('tomato');
+                    const isPepper = log.cropName.toLowerCase().includes('pepper');
+                    return (
+                      <button
+                        key={log.id}
+                        type="button"
+                        onClick={() => {
+                          triggerHaptic('tap');
+                          setSelectedLogId(log.id);
+                        }}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                          selectedLogId === log.id
+                            ? 'bg-[#1A3B29] text-white shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        {isTomato ? '🍅 Tomato Leaf' : isPepper ? '🌶️ Pepper Leaf' : log.cropName}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div className="relative h-64 rounded-2xl overflow-hidden select-none border border-slate-200">
-                {/* "After" Image (Background) */}
+              <div
+                ref={sliderRef}
+                className="relative h-64 sm:h-72 rounded-2xl overflow-hidden select-none border border-slate-200 bg-slate-950"
+              >
+                {/* "After" Image (Background: Actual Recovered Healthy Leaf) */}
                 <img
                   src={activeLog.afterPhotoUrl || activeLog.beforePhotoUrl}
-                  alt="After Treatment"
+                  alt={`${activeLog.cropName} Recovered Leaf`}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute top-3 right-3 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-xs">
-                  CURRENT (DAY 10)
+                <div className="absolute top-3 right-3 bg-black/75 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg backdrop-blur-xs z-10 flex items-center gap-1.5 shadow-md">
+                  <span className="w-2 h-2 rounded-full bg-[#78C441]" />
+                  <span>AFTER: RECOVERED HEALTHY LEAF</span>
                 </div>
 
-                {/* "Before" Image (Clipped Overlay) */}
+                {/* "Before" Image (Clipped Overlay: Actual Diseased Leaf) */}
                 <div
                   className="absolute inset-y-0 left-0 overflow-hidden"
                   style={{ width: `${sliderPos}%` }}
                 >
                   <img
                     src={activeLog.beforePhotoUrl}
-                    alt="Before Treatment"
-                    className="absolute inset-0 w-full h-full object-cover max-w-none"
-                    style={{ width: '100%', height: '100%', minWidth: '320px' }}
+                    alt={`${activeLog.cropName} Diseased Leaf`}
+                    className="absolute inset-y-0 left-0 h-full object-cover max-w-none"
+                    style={{ width: `${containerWidth}px` }}
                   />
-                  <div className="absolute top-3 left-3 bg-[#DC2626]/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-xs">
-                    DAY 0 INFECTION
+                  <div className="absolute top-3 left-3 bg-[#DC2626]/90 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg backdrop-blur-xs z-10 flex items-center gap-1.5 shadow-md">
+                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                    <span>BEFORE: DISEASED LEAF (DAY 0)</span>
                   </div>
                 </div>
 
                 {/* Vertical Divider Line */}
                 <div
-                  className="absolute top-0 bottom-0 w-1 bg-white shadow-lg pointer-events-none"
+                  className="absolute top-0 bottom-0 w-1 bg-white shadow-2xl pointer-events-none z-20"
                   style={{ left: `${sliderPos}%` }}
                 >
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 bg-white text-[#1A3B29] rounded-full shadow-md flex items-center justify-center text-xs font-black border border-slate-200">
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white text-[#1A3B29] rounded-full shadow-lg flex items-center justify-center text-xs font-black border-2 border-[#78C441]">
                     ↔
                   </div>
                 </div>
@@ -344,14 +405,14 @@ export function CropRecoveryTracker({ onClose, onOpenScan }: CropRecoveryTracker
                   max="100"
                   value={sliderPos}
                   onChange={(e) => setSliderPos(Number(e.target.value))}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
                   aria-label="Comparison slider"
                 />
               </div>
 
               <div className="flex justify-between text-xs text-[#5E6D65] pt-1">
-                <span className="font-bold text-[#DC2626]">← Slide left to see Day 10 healed</span>
-                <span className="font-bold text-[#2D6A4F]">Slide right to see Day 0 lesion →</span>
+                <span className="font-bold text-[#DC2626]">← Slide left for Day 10 healed leaf</span>
+                <span className="font-bold text-[#2D6A4F]">Slide right for Day 0 lesion leaf →</span>
               </div>
             </div>
 
