@@ -1,7 +1,7 @@
 // T-001 / T-003: Shared models and canonical data schemas
 import { z } from 'zod';
 
-export const LocaleSchema = z.enum(['en', 'tw', 'fr', 'ha', 'sw', 'es']);
+export const LocaleSchema = z.enum(['en', 'tw', 'fr', 'ha', 'sw', 'es', 'nl']);
 export type Locale = z.infer<typeof LocaleSchema>;
 
 export const ProblemCategorySchema = z.enum(['disease', 'pest', 'deficiency', 'stress']);
@@ -67,6 +67,10 @@ export const PlantSchema = z.object({
   plantedOn: TimestampSchema.optional(),
   location: PlantLocationSchema,
   sunExposure: SunExposureSchema.optional(),
+  cropVariety: z.string().optional(),
+  plantingDate: z.string().optional(),
+  source: z.string().optional(),
+  environment: z.string().optional(),
   createdAt: TimestampSchema,
 });
 export type Plant = z.infer<typeof PlantSchema>;
@@ -277,3 +281,124 @@ export const ModelOutputSchema = z.object({
     .max(3),
 });
 export type ModelOutput = z.infer<typeof ModelOutputSchema>;
+
+// T-025: Industry-grade Agronomy Schemas (Recovery Tracker, Outbreak Radar, Field Scouting, Spray Dosage, Harvest Tracker)
+export const TreatmentEventSchema = z.object({
+  id: z.string(),
+  date: z.string(),
+  action: z.string(),
+  notes: z.string().optional(),
+  symptomsResolved: z.array(z.string()),
+  photoUrl: z.string().optional(),
+});
+export type TreatmentEvent = z.infer<typeof TreatmentEventSchema>;
+
+export const CropRecoveryLogSchema = z.object({
+  id: z.string(),
+  plantId: z.string(),
+  cropName: z.string(),
+  diagnosisTitle: z.string(),
+  initialSeverity: z.enum(['mild', 'moderate', 'severe']),
+  initialDate: z.string(),
+  recoveryScore: z.number().min(0).max(100), // 0 to 100%
+  beforePhotoUrl: z.string(),
+  afterPhotoUrl: z.string().optional(),
+  treatmentTimeline: z.array(TreatmentEventSchema),
+  resolved: z.boolean(),
+  lastUpdated: z.string(),
+});
+export type CropRecoveryLog = z.infer<typeof CropRecoveryLogSchema>;
+
+export const OutbreakAlertSchema = z.object({
+  id: z.string(),
+  pestOrDiseaseName: z.string(),
+  category: ProblemCategorySchema,
+  cropTarget: z.string(),
+  riskLevel: z.enum(['low', 'moderate', 'high', 'critical']),
+  distanceKm: z.number(),
+  reportedCases: z.number(),
+  vectorConditions: z.string(),
+  preventiveChecklist: z.array(z.string()),
+  recommendedBiocontrol: z.string(),
+  coordinates: z.object({
+    lat: z.number(),
+    lng: z.number(),
+    locationName: z.string(),
+  }),
+});
+export type OutbreakAlert = z.infer<typeof OutbreakAlertSchema>;
+
+export const FieldScoutingReportSchema = z.object({
+  id: z.string(),
+  reportNumber: z.string(),
+  farmOrPlotName: z.string(),
+  scoutName: z.string(),
+  inspectionDate: z.string(),
+  cropName: z.string(),
+  cropVariety: z.string().optional(),
+  totalPlantsInspected: z.number(),
+  affectedPlantsCount: z.number(),
+  severityIndex: z.number().min(0).max(100), // percentage
+  primaryDiagnosis: z.string(),
+  secondarySuspects: z.array(z.string()),
+  evidencePhotos: z.array(z.string()),
+  environmentalConditions: z.object({
+    temperatureC: z.number().optional(),
+    humidityPercent: z.number().optional(),
+    soilMoistureStatus: z.string().optional(),
+  }),
+  fieldNotes: z.string(),
+  voiceNotesTranscript: z.string().optional(),
+  culturalPrescription: z.array(z.string()),
+  organicInterventions: z.array(z.string()),
+  globalGapCompliant: z.boolean(),
+  inspectorSignature: z.string(),
+});
+export type FieldScoutingReport = z.infer<typeof FieldScoutingReportSchema>;
+
+export const SprayDosageRecipeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  pestOrDiseaseTarget: z.string(),
+  dilutionRatio: z.string(),
+  baseUnit: z.enum(['per_liter', 'per_gallon', 'per_sqm', 'per_acre']),
+  ingredients: z.array(
+    z.object({
+      name: z.string(),
+      amountPerBaseUnit: z.number(),
+      unit: z.string(),
+    })
+  ),
+  mixingSafety: z.array(z.string()),
+  applicationWindow: z.string(), // e.g., "Late afternoon / twilight to prevent leaf scorch"
+  maxFrequencyDays: z.number(),
+  reentryIntervalHours: z.number(),
+});
+export type SprayDosageRecipe = z.infer<typeof SprayDosageRecipeSchema>;
+
+export const MaturityStageSchema = z.enum([
+  'seedling',
+  'vegetative',
+  'flowering',
+  'fruiting',
+  'harvest_ready',
+  'overripe',
+]);
+export type MaturityStage = z.infer<typeof MaturityStageSchema>;
+
+export const HarvestTrackerSchema = z.object({
+  id: z.string(),
+  plantId: z.string(),
+  cropName: z.string(),
+  variety: z.string(),
+  plantingDate: z.string(),
+  daysToMaturity: z.number(),
+  expectedHarvestDate: z.string(),
+  daysRemaining: z.number(),
+  progressPercentage: z.number().min(0).max(100),
+  currentStage: MaturityStageSchema,
+  visualRipeningCues: z.array(z.string()),
+  harvestTechnique: z.string(),
+  storageConditions: z.string(),
+});
+export type HarvestTracker = z.infer<typeof HarvestTrackerSchema>;

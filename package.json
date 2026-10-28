@@ -1,1 +1,57 @@
-
+{
+  "name": "verdescan",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3000 --host=0.0.0.0",
+    "build": "vite build",
+    "start": "tsx server.ts",
+    "preview": "vite preview",
+    "clean": "rm -rf dist server.js",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:rules": "echo \"Firebase rules tests on emulators (T-004)\"",
+    "test:functions": "echo \"Function integration tests on emulators (T-016)\"",
+    "test:e2e": "echo \"Playwright e2e suite\"",
+    "emulators": "npx firebase-tools emulators:start --only auth,firestore,storage,functions",
+    "kb:validate": "tsx packages/kb/scripts/validate.ts",
+    "kb:seed": "tsx packages/kb/scripts/seed.ts",
+    "eval": "tsx packages/eval/src/runner.ts",
+    "deploy:dev": "echo \"Deploy to dev\"",
+    "deploy:staging": "echo \"Deploy to staging\"",
+    "deploy:prod": "echo \"Deploy to prod\""
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "dexie": "^4.4.6",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.4.21",
+    "esbuild": "^0.25.0",
+    "eslint": "^10.13.0",
+    "firebase-tools": "^15.34.0",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2",
+    "typescript-eslint": "^8.71.2"
+  }
+}

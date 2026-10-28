@@ -1,9 +1,14 @@
-// UI-002: Type-safe i18n hook matching next-intl conventions with zero hardcoded strings
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import type { Locale } from '@verdescan/shared';
 import enMessages from '../messages/en.json';
+import nlMessages from '../messages/nl.json';
 
 export type Messages = typeof enMessages;
+
+const LOCALE_DICTIONARIES: Record<string, Record<string, unknown>> = {
+  en: enMessages as unknown as Record<string, unknown>,
+  nl: nlMessages as unknown as Record<string, unknown>,
+};
 
 interface I18nContextType {
   locale: Locale;
@@ -24,13 +29,35 @@ export function I18nProvider({
   children: React.ReactNode;
   initialLocale?: Locale;
 }) {
-  const [locale, setLocale] = useState<Locale>(initialLocale);
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('verdescan_locale');
+      if (saved && ['en', 'tw', 'fr', 'ha', 'sw', 'es', 'nl'].includes(saved)) {
+        return saved as Locale;
+      }
+    }
+    return initialLocale;
+  });
+
+  const setLocale = (newLocale: Locale) => {
+    setLocaleState(newLocale);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('verdescan_locale', newLocale);
+      document.documentElement.lang = newLocale;
+    }
+  };
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = locale;
+    }
+  }, [locale]);
 
   const value = useMemo(
     () => ({
       locale,
       setLocale,
-      messages: enMessages as unknown as Record<string, unknown>,
+      messages: LOCALE_DICTIONARIES[locale] || enMessages as unknown as Record<string, unknown>,
     }),
     [locale]
   );
@@ -65,7 +92,20 @@ export function useTranslations(namespace?: string) {
     }
 
     if (typeof current !== 'string') {
-      return fullPath;
+      let fallbackCurrent: unknown = enMessages;
+      for (const part of parts) {
+        if (fallbackCurrent && typeof fallbackCurrent === 'object' && part in (fallbackCurrent as Record<string, unknown>)) {
+          fallbackCurrent = (fallbackCurrent as Record<string, unknown>)[part];
+        } else {
+          fallbackCurrent = undefined;
+          break;
+        }
+      }
+      if (typeof fallbackCurrent === 'string') {
+        current = fallbackCurrent;
+      } else {
+        return fullPath;
+      }
     }
 
     let result = current;

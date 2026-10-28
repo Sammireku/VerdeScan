@@ -1,0 +1,119 @@
+{
+  "common": {
+    "appName": "VerdeScan",
+    "appTagline": "Gewasziekte & Plaag AI",
+    "online": "Online",
+    "workingOffline": "Offline Werken",
+    "installApp": "App Installeren",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "close": "Sluiten",
+    "retry": "Opnieuw proberen",
+    "delete": "Verwijderen",
+    "loading": "Analyseren met 2-Staps Landbouw AI..."
+  },
+  "nav": {
+    "scan": "Scannen",
+    "garden": "Mijn Tuin",
+    "guides": "Gidsen",
+    "search": "Zoeken",
+    "settings": "Instellingen"
+  },
+  "home": {
+    "heroTitle": "Wat tast uw gewassen vandaag aan?",
+    "heroSub": "Identificeer plantenziekten, plagen en voedingsstoftekorten met offline veld-AI.",
+    "scanCardTitle": "Scan Gewasprobleem",
+    "scanCardSub": "Herken ziekten, plagen en tekorten.",
+    "startScan": "Start Scan",
+    "uploadPhoto": "Foto Uploaden",
+    "quickActions": "Snelle Boerderijacties",
+    "guidesAction": "Gidsen (Offline opgeslagen)",
+    "gardenAction": "Mijn Tuin",
+    "historyAction": "Geschiedenis"
+  },
+  "banners": {
+    "offline": "Werken met opgeslagen inhoud",
+    "offlineSub": "U bent offline. Scans worden veilig opgeslagen op uw apparaat; gidsen en eerdere diagnoses blijven volledig toegankelijk.",
+    "updateAvailable": "Er is een nieuwe versie van VerdeScan beschikbaar.",
+    "updateAction": "Nu bijwerken",
+    "dismiss": "Later",
+    "disclaimer": "Eerstelijns beslissingsondersteuning. Raadpleeg uw lokale landbouwvoorlichter voor commerciële of chemische interventies."
+  },
+  "diagnose": {
+    "camera": {
+      "launchCamera": "Camera Starten",
+      "chooseFile": "Bestand Kiezen",
+      "cameraUnavailable": "Cameratoegang niet beschikbaar. Kies een afbeelding om te uploaden.",
+      "leafFocus": "Scherpstellen op aangetast blad",
+      "wholePlant": "Leg het hele bladerdak vast",
+      "daylight": "Zorg voor goed daglicht (geen flitser)",
+      "blurryWarning": "Foto is wazig. Tik om opnieuw te nemen.",
+      "darkWarning": "Foto is donker. Neem opnieuw in daglicht.",
+      "sharpPhoto": "Scherpe daglichtfoto",
+      "photosCount": "van 4 foto's bijgevoegd",
+      "partLeaf": "Blad",
+      "partStem": "Stengel",
+      "partFruit": "Vrucht",
+      "partFlower": "Bloem",
+      "partRoot": "Wortel",
+      "partWhole": "Hele Plant",
+      "selectCrop": "Selecteer Gewas",
+      "symptomsLabel": "Beschrijf wat u ziet",
+      "symptomsPlaceholder": "bijv. Donkere vlekken met kringen, gele bladeren, kleine kruipende insecten...",
+      "daysSince": "Dagen van symptomen",
+      "weather": "Weer",
+      "watering": "Bewatering",
+      "submitOnline": "Plantgezondheid Nu Analyseren",
+      "submitOffline": "Scan in Wachtrij (Offline Modus)"
+    },
+    "result": {
+      "likelyProblem": "Waarschijnlijk Probleem",
+      "confidence": "Zekerheid",
+      "whatISaw": "Wat ik zag",
+      "safetyNote": "Veiligheidsnotitie",
+      "safetyConsult": "Raadpleeg een lokale expert voor chemicaliën.",
+      "whatToDoNow": "Wat nu te doen",
+      "helpful": "Nuttig",
+      "notHelpful": "Niet Nuttig",
+      "readAloud": "Voorlezen",
+      "stopReading": "Stoppen",
+      "firstLineGuidance": "Eerstelijns adviesbericht: Deze diagnose is beslissingsondersteuning gebaseerd op gecontroleerde landbouwdata. Raadpleeg voor belangrijke beslissingen uw landbouwvoorlichter.",
+      "noMatchTitle": "Geen Duidelijke Ziekte Gevonden",
+      "noMatchDesc": "De foto kwam niet met voldoende zekerheid overeen met bekende gewasziekten. Probeer een stabiele close-up te nemen bij helder daglicht.",
+      "retake": "Neem Nog Een Foto",
+      "startNewScan": "Start Nieuwe Scan"
+    }
+  },
+  "queue": {
+    "pendingTitle": "Wachten op verbinding...",
+    "pendingCount": "wachtende scan(s) in wachtrij...",
+    "autoSync": "Synchroniseert automatisch zodra verbinding herstelt",
+    "offlineChecklist": "Offline checklist van waarschijnlijke oorzaken",
+    "attempts": "Pogingen",
+    "syncNow": "Nu Synchroniseren"
+  },
+  "garden": {
+    "title": "Mijn Boerderij & Gewassen",
+    "sub": "Volg gewaspercelen, grondmethoden en eerdere AI-diagnosedossiers.",
+    "addPlot": "Gewasperceel Toevoegen",
+    "healthy": "In Monitoring",
+    "historyTitle": "Offline Scangeschiedenis (Dexie IndexedDB)",
+    "noHistory": "Nog geen eerdere scans opgeslagen. Voer een scan uit om uw gewashistorie op te bouwen."
+  },
+  "guides": {
+    "title": "Gidsen & Vaardigheden",
+    "sub": "Herontgroeien van keukenresten, droogtebestendige containertuinen en biologisch composteren.",
+    "offlineCached": "100% Offline Opgeslagen",
+    "plasticSafetyTitle": "Voedselveiligheidswaarschuwing: Gerecyclede Kunststoffen (Sectie 10)",
+    "plasticFoodGrade": "Gebruik uitsluitend plastic gemarkeerd met Harsidentificatiecode 1 (PET) of 2 (HDPE) die drinkwater of spijsolie bevatten.",
+    "plasticWarning": "VERBOD: Gebruik nooit containers waarin eerder motorolie, remvloeistof, koelvloeistof, pesticiden of industriële oplosmiddelen hebben gezeten."
+  },
+  "settings": {
+    "title": "App-instellingen & Privacy",
+    "sub": "Beheer taal, privacytoestemming, exporteer uw gegevens of voer gouden evaluatietests uit.",
+    "language": "Taal & Regionale Stem (i18n)",
+    "privacy": "Privacy & Modelverbetering (Sectie 5)",
+    "exportData": "Gegevensrechten (Gegevensexport & Account wissen)",
+    "eval": "Golden-Set Benchmark (pnpm eval)"
+  }
+}

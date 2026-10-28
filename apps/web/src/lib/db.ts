@@ -34,6 +34,7 @@ export class LocalDB extends Dexie {
   history!: Table<CachedDiagnosis, string>;
   bookmarks!: Table<Bookmark, string>;
   meta!: Table<{ key: string; value: unknown }, string>;
+  plants!: Table<Plant, string>;
 
   constructor() {
     super('verdescan');
@@ -42,6 +43,9 @@ export class LocalDB extends Dexie {
       history: 'id, createdAt, topProblemId',
       bookmarks: 'id, kind, createdAt',
       meta: 'key',
+    });
+    this.version(2).stores({
+      plants: 'id, cropId, createdAt',
     });
   }
 }

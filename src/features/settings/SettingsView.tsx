@@ -20,9 +20,10 @@ import type { Locale } from '@verdescan/shared';
 export interface SettingsViewProps {
   locale: Locale;
   setLocale: (loc: Locale) => void;
+  onClose?: () => void;
 }
 
-export function SettingsView({ locale, setLocale }: SettingsViewProps) {
+export function SettingsView({ locale, setLocale, onClose }: SettingsViewProps) {
   const [trainingConsent, setTrainingConsent] = useState(false);
   const [evalResult, setEvalResult] = useState<GoldenRunResult | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -92,11 +93,23 @@ export function SettingsView({ locale, setLocale }: SettingsViewProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-extrabold text-[#1B1B1B] tracking-tight">App Settings & Privacy</h1>
-        <p className="text-xs text-[#5A6B5E]">
-          Manage interface language, privacy consent, export your records, or run golden evaluation benchmarks.
-        </p>
+      <div className="flex items-center gap-3">
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-white border border-[#E6EBE4] flex items-center justify-center text-[#19201D] hover:bg-stone-50 touch-target shrink-0"
+            title="Back"
+          >
+            ✕
+          </button>
+        )}
+        <div>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-[#1B1B1B] tracking-tight">App Settings & Privacy</h1>
+          <p className="text-xs text-[#5A6B5E]">
+            Manage interface language, privacy consent, export your records, or run golden evaluation benchmarks.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -115,6 +128,7 @@ export function SettingsView({ locale, setLocale }: SettingsViewProps) {
               className="w-full text-xs font-bold bg-[#FAFAF5] border border-[#E5E5DC] rounded-xl p-3"
             >
               <option value="en">🇬🇧 English (International)</option>
+              <option value="nl">🇳🇱 Nederlands (Dutch)</option>
               <option value="tw">🇬🇭 Twi (Ghana Pilot)</option>
               <option value="fr">🇫🇷 Français (West Africa)</option>
               <option value="ha">🇳🇬 Hausa (Northern Region)</option>

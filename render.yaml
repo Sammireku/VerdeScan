@@ -1,0 +1,26 @@
+# Render Blueprint Specification for VerdeScan
+# https://render.com/docs/blueprint-spec
+
+services:
+  # Option 1: Full-Stack Web Service (Node.js + Express + Vite + Server-Side Gemini API)
+  - type: web
+    name: verdescan-app
+    runtime: node
+    plan: starter
+    region: frankfurt # or oregon, ohio, singapore
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: GEMINI_API_KEY
+        sync: false # Set securely in Render Dashboard (Secret)
+      - key: VITE_FIREBASE_PROJECT_ID
+        value: verdescan-prod
+      - key: VITE_FIREBASE_APP_ID
+        value: 1:1234567890:web:abcdef123456
+      - key: VITE_FIREBASE_API_KEY
+        sync: false

@@ -1,32 +1,55 @@
-// UI-002: VerdeScan Application Shell with Global Banners, BottomNav & next-intl Provider
+// UI Rework: App Shell matching uploaded VerdeScan mobile mockups exactly
 import React, { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
-import { OfflineBanner } from './components/OfflineBanner';
-import { UpdateBanner } from './components/UpdateBanner';
+import { PhoneFrame } from './components/PhoneFrame';
 import { BottomNav, type NavTab } from './components/BottomNav';
-import { CameraWizard } from './features/diagnose/CameraWizard';
-import { ResultView } from './features/diagnose/ResultView';
-import { GardenView } from './features/garden/GardenView';
-import { GuidesView } from './features/guides/GuidesView';
+import { HomeView } from './features/home/HomeView';
+import { DiagnosisView } from './features/diagnose/DiagnosisView';
+import { AiBotanistView } from './features/ai_botanist/AiBotanistView';
+import { PlantsView } from './features/garden/PlantsView';
+import { HistoryView } from './features/history/HistoryView';
 import { SettingsView } from './features/settings/SettingsView';
+import { PlantCareHub } from './features/resources/PlantCareHub';
+import { FindSeedsView } from './features/seeds/FindSeedsView';
+import { GrowersCommunityHub } from './features/community/GrowersCommunityHub';
+import { CropRecoveryTracker } from './features/recovery/CropRecoveryTracker';
+import { OutbreakRadarView } from './features/radar/OutbreakRadarView';
+import { FieldReportModal } from './features/reports/FieldReportModal';
+import { SprayDosageCalculator } from './features/calculator/SprayDosageCalculator';
+import { HarvestTrackerModal } from './features/garden/HarvestTrackerModal';
+import { ScanModal } from './features/diagnose/ScanModal';
+import { PremiumModal } from './components/PremiumModal';
+import { AuthModal } from './components/AuthModal';
+import { UpdateBanner } from './components/UpdateBanner';
 import { queueRunner } from './lib/queue';
 import { type QueuedDiagnosis } from './lib/db';
-import { I18nProvider, useTranslations, useLocale } from './lib/i18n';
-import { Clock, RotateCcw, Trash2 } from 'lucide-react';
-import type { SubmitDiagnosisRes } from '@verdescan/shared';
+import { I18nProvider, useLocale } from './lib/i18n';
+import { AuthProvider, useAuth } from './lib/auth';
 
 function MainAppShell() {
-  const [activeTab, setActiveTab] = useState<NavTab>('diagnose');
+  const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [isOnline, setIsOnline] = useState<boolean>(
     typeof navigator !== 'undefined' ? navigator.onLine : true
   );
   const [queuedItems, setQueuedItems] = useState<QueuedDiagnosis[]>([]);
-  const [currentResult, setCurrentResult] = useState<SubmitDiagnosisRes | null>(null);
-  const [currentThumbnail, setCurrentThumbnail] = useState<string | null>(null);
-  const [isCapturing, setIsCapturing] = useState<boolean>(false);
 
-  const tQueue = useTranslations('queue');
-  const tBanners = useTranslations('banners');
+  // Modals & Sub-views
+  const [isScanOpen, setIsScanOpen] = useState(false);
+  const [scanMode, setScanMode] = useState<'identify' | 'diagnose'>('diagnose');
+  const [isPremiumOpen, setIsPremiumOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isPlantCareOpen, setIsPlantCareOpen] = useState(false);
+  const [isFindSeedsOpen, setIsFindSeedsOpen] = useState(false);
+  const [isCommunityOpen, setIsCommunityOpen] = useState(false);
+
+  // Industry-Grade Agronomy Feature States
+  const [isRecoveryOpen, setIsRecoveryOpen] = useState(false);
+  const [isRadarOpen, setIsRadarOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const [isHarvestOpen, setIsHarvestOpen] = useState(false);
+
   const { locale, setLocale } = useLocale();
 
   useEffect(() => {
@@ -48,172 +71,178 @@ function MainAppShell() {
     };
   }, []);
 
-  const handleDiagnosisComplete = (result: SubmitDiagnosisRes, thumbnail?: string) => {
-    setCurrentResult(result);
-    setCurrentThumbnail(thumbnail || null);
-    setIsCapturing(false);
+  const handleOpenScan = (mode: 'identify' | 'diagnose' = 'diagnose') => {
+    setScanMode(mode);
+    setIsScanOpen(true);
   };
 
-  const handleResetDiagnosis = () => {
-    setCurrentResult(null);
-    setCurrentThumbnail(null);
+  const closeAllSubviews = () => {
+    setIsHistoryOpen(false);
+    setIsSettingsOpen(false);
+    setIsPlantCareOpen(false);
+    setIsFindSeedsOpen(false);
+    setIsCommunityOpen(false);
+    setIsRecoveryOpen(false);
+    setIsRadarOpen(false);
+    setIsCalculatorOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF5] text-[#1B1B1B] flex flex-col font-sans antialiased selection:bg-[#D8F3DC] selection:text-[#2D6A4F]">
-      {/* Non-blocking UpdateBanner (strictly suppressed during camera capture) */}
-      <UpdateBanner isCapturing={isCapturing} />
+    <PhoneFrame isOnline={isOnline} queuedCount={queuedItems.length}>
+      {/* UpdateBanner (suppressed during active capture) */}
+      <UpdateBanner isCapturing={isScanOpen} />
 
-      {/* Top Navigation with Calm Status Indicator */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          if (tab !== 'diagnose') {
-            setCurrentResult(null);
-            setIsCapturing(false);
-          }
-        }}
-        isOnline={isOnline}
-        queuedCount={queuedItems.length}
-      />
-
-      {/* Offline Status Alert Banner */}
-      <OfflineBanner isOnline={isOnline} queuedCount={queuedItems.length} />
-
-      {/* Main Feature Views Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto ps-4 pe-4 sm:ps-6 sm:pe-6 lg:ps-8 lg:pe-8 py-6 pb-28 md:pb-12">
-        {activeTab === 'diagnose' && (
-          <div className="space-y-6">
-            {/* If there are pending items in Dexie queue, show pending queue cards */}
-            {queuedItems.length > 0 && !currentResult && (
-              <div className="bg-[#FEF3C7]/90 rounded-2xl border border-[#FDE68A] p-5 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#92400E] flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-[#E09F3E] animate-spin" /> {tQueue('pendingTitle')} ({queuedItems.length})
-                  </span>
-                  <span className="text-[11px] text-[#92400E] font-medium">{tQueue('autoSync')}</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {queuedItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-white p-4 rounded-xl border border-[#FDE68A] shadow-2xs space-y-2.5"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#1B1B1B]">
-                          Crop: <strong className="text-[#2D6A4F] capitalize">{item.context.cropId || 'Tomato'}</strong>
-                        </span>
-                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]">
-                          {item.state}
-                        </span>
-                      </div>
-
-                      <p className="text-[11px] text-[#5A6B5E] line-clamp-1 font-medium">
-                        {item.context.symptomsText || 'Foliar lesions photo captured'}
-                      </p>
-
-                      {/* Offline Checklist of Likely Causes for Chosen Crop (Page 27, Item 6) */}
-                      <div className="bg-[#FAFAF5] p-2.5 rounded-xl border border-[#E5E5DC] text-[11px] text-[#1B1B1B] space-y-1">
-                        <span className="font-bold text-[#2D6A4F]">{tQueue('offlineChecklist')}:</span>
-                        <ul className="list-disc ps-4 space-y-0.5 text-[10px] text-[#5A6B5E]">
-                          <li>Check for concentric ring spots on lower leaves (Early Blight)</li>
-                          <li>Inspect leaf undersides for small aphid or whitefly clusters</li>
-                          <li>Verify if yellowing is V-shaped along central midrib (Nitrogen)</li>
-                        </ul>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-1">
-                        <span className="text-[10px] text-[#5A6B5E] font-mono">
-                          {tQueue('attempts')}: {item.attempts}/5
-                        </span>
-                        <div className="flex items-center gap-2">
-                          {isOnline && (
-                            <button
-                              type="button"
-                              onClick={() => queueRunner.retryItem(item.id)}
-                              className="touch-target text-xs text-[#2D6A4F] font-bold hover:underline flex items-center gap-1"
-                            >
-                              <RotateCcw className="w-3.5 h-3.5" /> {tQueue('syncNow')}
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => queueRunner.removeItem(item.id)}
-                            className="touch-target text-stone-400 hover:text-[#BC4749] p-1.5"
-                            title="Delete queued item"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {currentResult ? (
-              <ResultView
-                result={currentResult}
-                locale={locale}
-                thumbnailUrl={currentThumbnail}
-                onReset={handleResetDiagnosis}
-              />
-            ) : (
-              <CameraWizard
-                locale={locale}
-                isOnline={isOnline}
-                onDiagnosisComplete={handleDiagnosisComplete}
-              />
-            )}
+      {/* Main Feature View */}
+      <main className="flex-1 pb-24">
+        {/* Settings Sub-View */}
+        {isSettingsOpen ? (
+          <div className="p-4">
+            <SettingsView
+              locale={locale}
+              setLocale={setLocale}
+              onClose={() => setIsSettingsOpen(false)}
+            />
           </div>
-        )}
+        ) : isHistoryOpen ? (
+          /* History Sub-View */
+          <HistoryView
+            onBack={() => setIsHistoryOpen(false)}
+            onStartNewChat={() => {
+              setIsHistoryOpen(false);
+              setActiveTab('ai_expert');
+            }}
+          />
+        ) : isPlantCareOpen ? (
+          /* Plant Care Resource Hub */
+          <PlantCareHub
+            onClose={() => setIsPlantCareOpen(false)}
+            onOpenScan={() => handleOpenScan('diagnose')}
+          />
+        ) : isFindSeedsOpen ? (
+          /* Interactive Find Seeds Map */
+          <FindSeedsView onClose={() => setIsFindSeedsOpen(false)} />
+        ) : isCommunityOpen ? (
+          /* Interactive Growers Community Hub */
+          <GrowersCommunityHub
+            onClose={() => setIsCommunityOpen(false)}
+            onOpenScan={() => handleOpenScan('diagnose')}
+          />
+        ) : isRecoveryOpen ? (
+          /* Crop Recovery & Longitudinal Health Tracker */
+          <CropRecoveryTracker
+            onClose={() => setIsRecoveryOpen(false)}
+            onOpenScan={() => handleOpenScan('diagnose')}
+          />
+        ) : isRadarOpen ? (
+          /* Regional Outbreak Radar & Early Warning */
+          <OutbreakRadarView
+            onClose={() => setIsRadarOpen(false)}
+            onOpenBotanist={() => {
+              setIsRadarOpen(false);
+              setActiveTab('ai_expert');
+            }}
+          />
+        ) : isCalculatorOpen ? (
+          /* Organic Spray & Dosage Calculator */
+          <SprayDosageCalculator onClose={() => setIsCalculatorOpen(false)} />
+        ) : (
+          /* Primary Tabs */
+          <>
+            {activeTab === 'home' && (
+              <HomeView
+                onOpenScan={handleOpenScan}
+                onOpenSettings={() => setIsSettingsOpen(true)}
+                onOpenPremium={() => setIsPremiumOpen(true)}
+                onOpenAuth={() => setIsAuthOpen(true)}
+                onOpenFindSeeds={() => setIsFindSeedsOpen(true)}
+                onOpenPlantCare={() => setIsPlantCareOpen(true)}
+                onOpenCommunity={() => setIsCommunityOpen(true)}
+                onOpenRecovery={() => setIsRecoveryOpen(true)}
+                onOpenRadar={() => setIsRadarOpen(true)}
+                onOpenReport={() => setIsReportOpen(true)}
+                onOpenCalculator={() => setIsCalculatorOpen(true)}
+                onOpenHarvest={() => setIsHarvestOpen(true)}
+                onOpenBotanist={() => {
+                  closeAllSubviews();
+                  setActiveTab('ai_expert');
+                }}
+              />
+            )}
 
-        {activeTab === 'garden' && <GardenView />}
+            {activeTab === 'diagnose' && (
+              <DiagnosisView
+                onOpenScan={() => handleOpenScan('diagnose')}
+                onOpenHistory={() => setIsHistoryOpen(true)}
+              />
+            )}
 
-        {activeTab === 'guides' && <GuidesView locale={locale} />}
+            {activeTab === 'ai_expert' && (
+              <AiBotanistView
+                onOpenHistory={() => setIsHistoryOpen(true)}
+                onOpenScan={() => handleOpenScan('diagnose')}
+              />
+            )}
 
-        {activeTab === 'settings' && (
-          <SettingsView locale={locale} setLocale={setLocale} />
+            {activeTab === 'plants' && (
+              <PlantsView onOpenScan={() => handleOpenScan('diagnose')} />
+            )}
+          </>
         )}
       </main>
 
-      {/* Mobile Bottom Navigation (Scan, Garden, Guides, Settings) with 44px Touch Targets */}
+      {/* 5-Item Bottom Navigation Bar with Center Elevated Scan Button */}
       <BottomNav
         activeTab={activeTab}
         setActiveTab={(tab) => {
+          closeAllSubviews();
           setActiveTab(tab);
-          if (tab !== 'diagnose') {
-            setCurrentResult(null);
-            setIsCapturing(false);
-          }
         }}
+        onOpenScan={() => handleOpenScan('diagnose')}
         queuedCount={queuedItems.length}
       />
 
-      {/* Footer Regulatory & System Status Strip */}
-      <footer className="hidden md:block border-t border-[#E5E5DC] bg-white py-3.5 text-xs text-[#5A6B5E]">
-        <div className="max-w-7xl mx-auto ps-4 pe-4 sm:ps-6 sm:pe-6 lg:ps-8 lg:pe-8 flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-[#2D6A4F]"></span>
-            <span>{tBanners('disclaimer')}</span>
-          </div>
-          <div className="flex items-center space-x-4 text-[11px] font-medium text-[#78716c]">
-            <span>Dexie Queue Active</span>
-            <span>44px Touch Standard</span>
-          </div>
-        </div>
-      </footer>
-    </div>
+      {/* GlobalG.A.P. Field Scouting Report Modal */}
+      <FieldReportModal
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+      />
+
+      {/* Harvest & Days-to-Maturity Countdown Modal */}
+      <HarvestTrackerModal
+        isOpen={isHarvestOpen}
+        onClose={() => setIsHarvestOpen(false)}
+      />
+
+      {/* Full-Screen Scan / Camera Wizard Modal (with First Attached Image UI) */}
+      <ScanModal
+        isOpen={isScanOpen}
+        onClose={() => setIsScanOpen(false)}
+        locale={locale}
+        isOnline={isOnline}
+        initialMode={scanMode}
+      />
+
+      {/* Premium Plus Modal */}
+      <PremiumModal
+        isOpen={isPremiumOpen}
+        onClose={() => setIsPremiumOpen(false)}
+      />
+
+      {/* Robust Sign In & Sign Up Auth Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+      />
+    </PhoneFrame>
   );
 }
 
 export default function App() {
   return (
     <I18nProvider initialLocale="en">
-      <MainAppShell />
+      <AuthProvider>
+        <MainAppShell />
+      </AuthProvider>
     </I18nProvider>
   );
 }

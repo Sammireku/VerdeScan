@@ -28,34 +28,36 @@ const CROP_ICONS: Record<string, string> = {
   plantain: '🍌',
 };
 
-export function GardenView() {
-  const [plants, setPlants] = useState<Plant[]>([
-    {
-      id: 'plt-001',
-      cropId: 'tomato',
-      nickname: 'Roma Tomato Bed #1',
-      location: 'bed',
-      sunExposure: 'full',
-      createdAt: '2026-10-01T08:00:00Z',
-    },
-    {
-      id: 'plt-002',
-      cropId: 'pepper',
-      nickname: 'Scotch Bonnet Container Plot',
-      location: 'container',
-      sunExposure: 'partial',
-      createdAt: '2026-10-05T09:30:00Z',
-    },
-  ]);
+import {
+  getGardenPlants,
+  addGardenPlant,
+  deleteGardenPlant,
+  saveCustomCrop,
+  getCropIcon,
+  getCustomCrops,
+  subscribeGarden,
+} from '../../lib/garden';
 
+export function GardenView() {
+  const [plants, setPlants] = useState<Plant[]>([]);
   const [history, setHistory] = useState<CachedDiagnosis[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [isCustomCropMode, setIsCustomCropMode] = useState(false);
   const [newCropId, setNewCropId] = useState('tomato');
+  const [customCropName, setCustomCropName] = useState('');
   const [newNickname, setNewNickname] = useState('');
   const [newLocation, setNewLocation] = useState<PlantLocation>('bed');
   const [newSunExposure, setNewSunExposure] = useState<SunExposure>('full');
 
+  const reloadPlants = async () => {
+    const list = await getGardenPlants();
+    setPlants(list);
+  };
+
   useEffect(() => {
+    reloadPlants();
+    const unsub = subscribeGarden(reloadPlants);
+
     // Load cached diagnosis history from Dexie
     db.history
       .orderBy('cachedAt')
@@ -63,25 +65,39 @@ export function GardenView() {
       .toArray()
       .then((items: CachedDiagnosis[]) => setHistory(items))
       .catch(() => {});
+
+    return () => unsub();
   }, []);
 
-  const handleAddPlant = (e: React.FormEvent) => {
+  const handleAddPlant = async (e: React.FormEvent) => {
     e.preventDefault();
+    let finalCropId = newCropId;
+    let finalCropLabel = newCropId;
+
+    if (isCustomCropMode && customCropName.trim()) {
+      const saved = saveCustomCrop(customCropName.trim());
+      finalCropId = saved.id;
+      finalCropLabel = saved.name;
+    }
+
     const created: Plant = {
       id: `plt-${Date.now()}`,
-      cropId: newCropId,
-      nickname: newNickname.trim() || `${newCropId.toUpperCase()} Field Plot`,
+      cropId: finalCropId,
+      nickname: newNickname.trim() || `${finalCropLabel.charAt(0).toUpperCase() + finalCropLabel.slice(1)} Field Plot`,
       location: newLocation,
       sunExposure: newSunExposure,
       createdAt: new Date().toISOString(),
     };
-    setPlants((prev) => [created, ...prev]);
+
+    await addGardenPlant(created);
     setShowAddModal(false);
     setNewNickname('');
+    setCustomCropName('');
+    setIsCustomCropMode(false);
   };
 
-  const handleDeletePlant = (id: string) => {
-    setPlants((prev) => prev.filter((p) => p.id !== id));
+  const handleDeletePlant = async (id: string) => {
+    await deleteGardenPlant(id);
   };
 
   return (
@@ -101,8 +117,28 @@ export function GardenView() {
         </button>
       </div>
 
-      {/* Plants Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Plants Grid or Empty State */}
+      {plants.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-dashed border-[#B7E4C7] p-8 text-center space-y-3">
+          <div className="w-14 h-14 rounded-2xl bg-[#D8F3DC] text-[#2D6A4F] flex items-center justify-center mx-auto text-2xl font-bold shadow-2xs">
+            🌱
+          </div>
+          <div>
+            <h3 className="font-extrabold text-sm text-[#1B1B1B]">No Crop Plots Added Yet</h3>
+            <p className="text-xs text-[#5A6B5E] max-w-md mx-auto mt-1 leading-relaxed">
+              Add the crops you grow on your farm (e.g. Tomatoes, Cassava, Cocoa, Yam). Once added, only your garden crops will appear in the crop selector on the Scan screen.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowAddModal(true)}
+            className="touch-target inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#1B4332] text-white text-xs font-bold transition-all shadow-xs min-h-[44px]"
+          >
+            <Plus className="w-4 h-4" /> Add Your First Crop Plot
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {plants.map((plant) => {
           const cropInfo = KB_CROPS.find((c) => c.id === plant.cropId);
           const icon = CROP_ICONS[plant.cropId] || '🌱';
@@ -153,7 +189,8 @@ export function GardenView() {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
 
       {/* Diagnosis History Timeline */}
       <div className="bg-white rounded-2xl border border-[#E5E5DC] p-6 shadow-xs space-y-4">
@@ -217,19 +254,45 @@ export function GardenView() {
           <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl border border-[#E5E5DC]">
             <h3 className="font-bold text-base text-[#1B1B1B]">Add Crop Plot to Garden</h3>
             <form onSubmit={handleAddPlant} className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-[#1B1B1B]">Crop Type</label>
-                <select
-                  value={newCropId}
-                  onChange={(e) => setNewCropId(e.target.value)}
-                  className="w-full text-xs font-bold bg-[#FAFAF5] border border-[#E5E5DC] rounded-xl p-3"
-                >
-                  {KB_CROPS.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {CROP_ICONS[c.id] || '🌱'} {c.name.en}
-                    </option>
-                  ))}
-                </select>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-[#1B1B1B]">Crop Type</label>
+                  <button
+                    type="button"
+                    onClick={() => setIsCustomCropMode(!isCustomCropMode)}
+                    className="text-xs font-bold text-[#2D6A4F] hover:underline"
+                  >
+                    {isCustomCropMode ? '← Pick from list' : '+ Enter custom crop'}
+                  </button>
+                </div>
+
+                {!isCustomCropMode ? (
+                  <select
+                    value={newCropId}
+                    onChange={(e) => setNewCropId(e.target.value)}
+                    className="w-full text-xs font-bold bg-[#FAFAF5] border border-[#E5E5DC] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]"
+                  >
+                    {KB_CROPS.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {getCropIcon(c.id)} {c.name.en}
+                      </option>
+                    ))}
+                    {getCustomCrops().map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {getCropIcon(c.id)} {c.name} (Custom)
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter any crop (e.g. Cocoa, Yam, Sorghum, Passion Fruit...)"
+                    value={customCropName}
+                    onChange={(e) => setCustomCropName(e.target.value)}
+                    className="w-full text-xs font-bold bg-[#FAFAF5] border border-[#2D6A4F] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]"
+                  />
+                )}
               </div>
 
               <div className="space-y-1">

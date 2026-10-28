@@ -84,6 +84,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: 'Cutar ganye',
         sw: 'Ukungu wa mapema',
         es: 'Tizón temprano',
+        nl: 'Vroege bladvlekkenziekte',
       },
       summary: {
         en: 'Fungal disease affecting older leaves first.',
@@ -92,6 +93,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: 'Cutar fungal da ke shafar tsofaffin ganye.',
         sw: 'Ugonjwa wa fangasi unaoathiri majani ya zamani.',
         es: 'Enfermedad fúngica que afecta primero las hojas viejas.',
+        nl: 'Schimmelziekte die het eerst de oudere bladeren aantast.',
       },
       symptoms: [
         'Brown spots with concentric rings on older lower leaves',
@@ -127,6 +129,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: 'Feshin man neem',
         sw: 'Dawa ya majani ya mafuta ya neem',
         es: 'Pulverización foliar de aceite de neem',
+        nl: 'Neemolie bladspray',
       },
       steps: {
         en: ['Dilute pure cold-pressed neem oil', 'Spray late afternoon away from bees'],
@@ -135,6 +138,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: ['Narke man neem a ruwa', 'Fesa da yamma'],
         sw: ['Changanya mafuta ya neem na maji', 'Nyunyizia jioni'],
         es: ['Diluir aceite de neem', 'Pulverizar por la tarde'],
+        nl: ['Verdun koudgeperste neemolie', 'Spuit laat in de middag'],
       },
       materials: ['Cold-pressed neem oil', 'Horticultural mild soap', 'Water sprayer'],
       costTier: 'low',
@@ -145,6 +149,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: ['Kada a fesa a rana sosai'],
         sw: ['Usinyunyizie wakati wa jua kali'],
         es: ['No aplicar a pleno sol'],
+        nl: ['Niet spuiten in de felle zon om bladverbranding te voorkomen'],
       },
       labelReferenceRequired: false,
       reviewedBy: 'expert-002',
@@ -164,6 +169,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: 'Sake shuka albasa daga ragowar kicin',
         sw: 'Kukuza vitunguu maji kutoka kwa mabaki',
         es: 'Rebrotar cebolletas a partir de restos',
+        nl: 'Lente-ui hergroeien uit keukenrestjes',
       },
       body: {
         en: 'Place root bottoms in shallow clean water on a windowsill...',
@@ -172,6 +178,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: 'Sanya tushen albasa a cikin ruwa kadan...',
         sw: 'Weka sehemu ya mizizi kwenye maji safi...',
         es: 'Coloca la base con raíces en un recipiente con agua...',
+        nl: 'Plaats de worteleinden in schoon water op een vensterbank...',
       },
       materials: ['Spring onion root ends', 'Glass or small jar', 'Clean water'],
       difficulty: 'easy',
@@ -183,6 +190,7 @@ describe('T-003: Canonical Models Tests', () => {
         ha: ['Canja ruwan duk bayan kwana 2'],
         sw: ['Badilisha maji kila siku 2'],
         es: ['Cambia el agua cada 2 días'],
+        nl: ['Ververs het water elke 2 dagen'],
       },
       version: 1,
     };

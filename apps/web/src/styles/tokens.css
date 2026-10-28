@@ -1,17 +1,20 @@
 /* T-007 / UI-001: Verdant Earth Design Tokens (Section 9) */
 :root {
   /* Verdant Earth Palette - Optimized for outdoor sunlight readability */
-  --color-primary: #2D6A4F;       /* Deep forest green (Primary actions) */
-  --color-primary-hover: #1b4332;
+  --color-primary: #1A3B29;       /* Deep forest green (Header, dark cards) */
+  --color-primary-hover: #122B1E;
   --color-primary-soft: #D8F3DC;  /* Soft green (Selected states, chips) */
-  --color-bg: #FAFAF5;            /* Warm off-white (Reduces glare vs pure white) */
+  --color-brand-green: #78C441;   /* Vibrant leaf action green (Buttons, scan badges) */
+  --color-brand-coral: #FF7F50;   /* Vibrant coral (Get plus button, identify) */
+  --color-brand-navy: #182635;    /* Dark navy (Try premium feature card) */
+  --color-bg: #F6F8F5;            /* Warm off-white surface */
   --color-surface: #FFFFFF;       /* Cards and sheets */
-  --color-surface-subtle: #F2F2EC;
-  --color-border: #E5E5DC;
-  --color-text: #1B1B1B;          /* Primary text */
-  --color-text-muted: #5A6B5E;    /* Secondary text */
-  --color-warning: #E09F3E;       /* Harvest amber (Needs-info, pending, safety) */
-  --color-danger: #BC4749;        /* Earth red (Errors, flagged) */
+  --color-surface-subtle: #EDF1EC;
+  --color-border: #E6EBE4;
+  --color-text: #19201D;          /* Primary text */
+  --color-text-muted: #5E6D65;    /* Secondary text */
+  --color-warning: #E09F3E;       /* Harvest amber */
+  --color-danger: #BC4749;        /* Earth red */
   --color-success: #40916C;       /* Healthy, complete */
 
   /* Touch Targets: STRICT minimum 44x44px for all interactive elements */
