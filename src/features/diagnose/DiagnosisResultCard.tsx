@@ -240,10 +240,7 @@ export function DiagnosisResultCard({
           <div className="relative h-56 rounded-xl overflow-hidden border border-white/20 bg-black flex items-center justify-center select-none">
             {/* Background Leaf Photo */}
             <img
-              src={
-                thumbnailUrl ||
-                'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=600&q=80'
-              }
+              src={thumbnailUrl || '/assets/plants/tomato_leaf_blight.jpg'}
               alt="Leaf symptom visualizer"
               className="w-full h-full object-cover opacity-80"
             />

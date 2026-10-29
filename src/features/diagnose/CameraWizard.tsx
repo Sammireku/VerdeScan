@@ -36,6 +36,7 @@ import {
   subscribeGarden,
   type AvailableCrop,
 } from '../../lib/garden';
+import { triggerHaptic } from '../../lib/haptics';
 
 export interface CameraWizardProps {
   locale: Locale;
@@ -181,10 +182,12 @@ export function CameraWizard({
   const captureFrame = async () => {
     if (!videoRef.current) return;
     if (images.length >= 4) {
+      triggerHaptic('warning');
       setActionError('Maximum of 4 photos reached.');
       return;
     }
 
+    triggerHaptic('shutter');
     const video = videoRef.current;
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth || 640;
@@ -218,6 +221,7 @@ export function CameraWizard({
       };
 
       setImages((prev) => [...prev, newImage]);
+      triggerHaptic('tap');
       setActionError(null);
     } catch {
       setActionError('Could not process photo. Please choose another image.');
@@ -237,6 +241,7 @@ export function CameraWizard({
   };
 
   const removeImage = (id: string) => {
+    triggerHaptic('tap');
     setImages((prev) => {
       const item = prev.find((img) => img.id === id);
       if (item) URL.revokeObjectURL(item.previewUrl);
@@ -299,6 +304,7 @@ export function CameraWizard({
           context,
           locale: 'en',
         });
+        triggerHaptic('success');
         setQueuedNotification('Diagnosis saved offline in Dexie queue. It will automatically process when signal returns!');
         setIsSubmitting(false);
       } else {
@@ -319,6 +325,7 @@ export function CameraWizard({
         });
 
         setIsSubmitting(false);
+        triggerHaptic('success');
         onDiagnosisComplete(res, images[0]?.previewUrl);
       }
     } catch (err: unknown) {

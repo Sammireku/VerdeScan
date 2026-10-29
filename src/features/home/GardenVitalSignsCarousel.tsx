@@ -25,7 +25,7 @@ const DEFAULT_VITAL_CROPS: CropVitalSign[] = [
     moistureVwc: 19.4,
     healthScore: 82,
     status: 'thirsty',
-    imageUrl: 'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=140&q=80',
+    imageUrl: '/assets/plants/roma_tomato_plant.jpg',
   },
   {
     id: 'vc-2',
@@ -36,7 +36,7 @@ const DEFAULT_VITAL_CROPS: CropVitalSign[] = [
     moistureVwc: 36.8,
     healthScore: 94,
     status: 'healthy',
-    imageUrl: 'https://images.unsplash.com/photo-1588615419955-f7169d2f6fb3?auto=format&fit=crop&w=140&q=80',
+    imageUrl: '/assets/plants/pepper_leaf_healthy.jpg',
   },
   {
     id: 'vc-3',

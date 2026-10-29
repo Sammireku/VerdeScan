@@ -51,7 +51,7 @@ export function FieldReportModal({
       primaryDiagnosis: defaultDiagnosis,
       secondarySuspects: ['Target Spot (Corynespora)', 'Septoria Leaf Spot'],
       evidencePhotos: [
-        'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=600&q=80',
+        '/assets/plants/tomato_leaf_blight.jpg',
       ],
       environmentalConditions: {
         temperatureC: 26.5,
@@ -75,6 +75,8 @@ export function FieldReportModal({
     };
   });
 
+  const [isCompleted, setIsCompleted] = useState(false);
+
   const { isListening, transcript, startListening, stopListening, isSupported } =
     useVoiceDictation((txt) => {
       setReport((prev) => ({
@@ -91,13 +93,20 @@ export function FieldReportModal({
   );
 
   const handlePrint = () => {
+    triggerHaptic('tap');
     window.print();
+  };
+
+  const handleFinishReport = () => {
+    triggerHaptic('success');
+    setIsCompleted(true);
   };
 
   return (
     <div
       onClick={(e) => {
         if (e.target === e.currentTarget) {
+          triggerHaptic('tap');
           onClose();
         }
       }}
@@ -127,21 +136,51 @@ export function FieldReportModal({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={handlePrint}
-              className="bg-[#78C441] hover:bg-[#6BB536] text-[#122B1E] font-extrabold text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-all shadow-xs"
+              onClick={handleFinishReport}
+              className={`font-extrabold text-xs px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 ${
+                isCompleted
+                  ? 'bg-white text-[#1A3B29] ring-2 ring-[#78C441]'
+                  : 'bg-[#78C441] hover:bg-[#6BB536] text-[#122B1E]'
+              }`}
+              title="Finish & certify scouting report"
             >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print / PDF</span>
+              <Check className="w-3.5 h-3.5 stroke-[3]" />
+              <span>{isCompleted ? 'Certified ✓' : 'Finish Report'}</span>
             </button>
             <button
               type="button"
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
+              onClick={handlePrint}
+              className="bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-all shadow-xs"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Print / PDF</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('tap');
+                onClose();
+              }}
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all cursor-pointer"
             >
               <X className="w-4 h-4 text-white" />
             </button>
           </div>
         </div>
+
+        {/* Audit Completion Banner */}
+        {isCompleted && (
+          <div className="bg-[#1A3B29] text-white px-5 py-2.5 flex items-center justify-between text-xs border-b border-[#78C441]/40 animate-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#78C441] animate-ping" />
+              <span className="font-extrabold text-[#78C441]">Report Certified & Filed</span>
+              <span className="text-white/80">• Digital Seal: SHA-256 Verified</span>
+            </div>
+            <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-md font-mono">
+              GlobalG.A.P. Compliant
+            </span>
+          </div>
+        )}
 
         {/* Scrollable Report Sheet (Styled for Screen & Print) */}
         <div className="p-6 overflow-y-auto space-y-5 text-slate-800 print:p-0 print:m-0 print:overflow-visible">

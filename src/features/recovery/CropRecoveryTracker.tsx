@@ -36,10 +36,8 @@ const DEFAULT_RECOVERY_LOGS: CropRecoveryLog[] = [
     initialDate: '2026-10-18',
     recoveryScore: 82,
     // Real leaf comparison: Alternaria blight leaf spots vs Lush recovered tomato foliage
-    beforePhotoUrl:
-      'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=800&q=80',
-    afterPhotoUrl:
-      'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=800&q=80',
+    beforePhotoUrl: '/assets/plants/tomato_leaf_blight.jpg',
+    afterPhotoUrl: '/assets/plants/tomato_leaf_healthy.jpg',
     resolved: false,
     lastUpdated: '2026-10-27',
     treatmentTimeline: [
@@ -75,10 +73,8 @@ const DEFAULT_RECOVERY_LOGS: CropRecoveryLog[] = [
     initialDate: '2026-10-21',
     recoveryScore: 94,
     // Real leaf comparison: Curled chlorotic aphid-damaged leaf vs Glossy pristine pepper leaf
-    beforePhotoUrl:
-      'https://images.unsplash.com/photo-1588615419955-f7169d2f6fb3?auto=format&fit=crop&w=800&q=80',
-    afterPhotoUrl:
-      'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=800&q=80',
+    beforePhotoUrl: '/assets/plants/pepper_leaf_blight.jpg',
+    afterPhotoUrl: '/assets/plants/pepper_leaf_healthy.jpg',
     resolved: true,
     lastUpdated: '2026-10-28',
     treatmentTimeline: [
@@ -106,10 +102,15 @@ export function CropRecoveryTracker({ onClose, onOpenScan }: CropRecoveryTracker
       const saved = localStorage.getItem('verdescan_recovery_logs');
       if (saved) {
         const parsed: CropRecoveryLog[] = JSON.parse(saved);
-        // Refresh with authentic distinct before & after photos
+        // Refresh with authentic distinct before & after local plant photos
         return parsed.map((item) => {
           const match = DEFAULT_RECOVERY_LOGS.find((d) => d.id === item.id);
-          if (match && item.beforePhotoUrl === item.afterPhotoUrl) {
+          if (
+            match &&
+            (!item.beforePhotoUrl.startsWith('/assets/plants') ||
+              item.beforePhotoUrl.includes('photo-1592878904946') ||
+              item.beforePhotoUrl === item.afterPhotoUrl)
+          ) {
             return {
               ...item,
               beforePhotoUrl: match.beforePhotoUrl,
