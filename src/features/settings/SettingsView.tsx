@@ -11,11 +11,16 @@ import {
   Globe,
   Database,
   Lock,
+  Bell,
+  Clock,
 } from 'lucide-react';
 import { runGoldenEvaluation, type GoldenRunResult } from '@verdescan/eval';
 import { PHASE_1_GATES } from '@verdescan/shared';
 import { db } from '../../lib/db';
 import type { Locale } from '@verdescan/shared';
+import { AgronomyReminderModal } from '../../components/AgronomyReminderModal';
+import { getAgronomyReminderConfig, type AgronomyReminderConfig } from '../../lib/notification-scheduler';
+import { triggerHaptic } from '../../lib/haptics';
 
 export interface SettingsViewProps {
   locale: Locale;
@@ -28,6 +33,8 @@ export function SettingsView({ locale, setLocale, onClose }: SettingsViewProps) 
   const [evalResult, setEvalResult] = useState<GoldenRunResult | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [exportComplete, setExportComplete] = useState(false);
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [reminderConfig, setReminderConfig] = useState<AgronomyReminderConfig>(getAgronomyReminderConfig());
 
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -273,7 +280,57 @@ export function SettingsView({ locale, setLocale, onClose }: SettingsViewProps) 
             )}
           </div>
         </div>
+
+        {/* Daily Morning Agronomy Reminder Scheduler */}
+        <div className="bg-white rounded-2xl border border-[#E5E5DC] p-6 shadow-xs space-y-4">
+          <div className="flex items-center space-x-2 border-b border-[#E5E5DC] pb-3">
+            <Bell className="w-5 h-5 text-[#2D6A4F]" />
+            <h2 className="font-extrabold text-sm text-[#1B1B1B]">Daily Morning Agronomy Reminder</h2>
+          </div>
+
+          <div className="space-y-3 text-xs">
+            <p className="text-[#5A6B5E] font-medium leading-relaxed">
+              Scheduled local alarm that alerts you every morning with customized, extension-grounded crop care and pest prevention tips for your specific crops and region.
+            </p>
+
+            <div className="p-3 bg-[#FAFAF5] rounded-xl border border-[#E5E5DC] flex items-center justify-between">
+              <div className="space-y-0.5">
+                <span className="font-extrabold text-[#1B1B1B] text-xs">
+                  {reminderConfig.enabled ? `Alarm Active at ${reminderConfig.time}` : 'Reminder Disabled'}
+                </span>
+                <p className="text-[10px] text-[#5A6B5E]">
+                  {reminderConfig.enabled ? 'Device notification scheduled' : 'Tap below to enable morning tips'}
+                </p>
+              </div>
+
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                reminderConfig.enabled ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-200 text-stone-600'
+              }`}>
+                {reminderConfig.enabled ? 'ENABLED' : 'OFF'}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('tap');
+                setIsReminderModalOpen(true);
+              }}
+              className="bg-[#2D6A4F] hover:bg-[#1B4332] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs flex items-center gap-1.5 min-h-[44px]"
+            >
+              <Clock className="w-4 h-4" /> Configure Reminder & Test Notification
+            </button>
+          </div>
+        </div>
       </div>
+
+      <AgronomyReminderModal
+        isOpen={isReminderModalOpen}
+        onClose={() => {
+          setIsReminderModalOpen(false);
+          setReminderConfig(getAgronomyReminderConfig());
+        }}
+      />
     </div>
   );
 }

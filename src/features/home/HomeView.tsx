@@ -30,6 +30,7 @@ import {
 import { KB_CROPS, KB_PROBLEMS, KB_GUIDES } from '@verdescan/kb';
 import { WeatherWidget } from '../../components/WeatherWidget';
 import { WeatherAlertBanner } from '../../components/WeatherAlertBanner';
+import { AgronomyTipCard } from '../../components/AgronomyTipCard';
 import { SoilMoistureMonitor } from './SoilMoistureMonitor';
 import { GardenVitalSignsCarousel } from './GardenVitalSignsCarousel';
 import { triggerHaptic } from '../../lib/haptics';
@@ -43,7 +44,7 @@ export interface HomeViewProps {
   onOpenFindSeeds?: () => void;
   onOpenPlantCare?: () => void;
   onOpenCommunity?: () => void;
-  onOpenBotanist?: () => void;
+  onOpenBotanist?: (prefill?: string) => void;
   onSelectCrop?: (cropId: string) => void;
   onOpenRecovery?: () => void;
   onOpenRadar?: () => void;
@@ -496,6 +497,12 @@ export function HomeView({
       <div className="px-4 space-y-3.5">
         {/* GEOLOCATION LOCAL WEATHER WIDGET (with Auto & Manual Setting) */}
         <WeatherWidget />
+
+        {/* AGRONOMY TIP OF THE DAY (Ingested from UMass Extension & Texas A&M AgriLife) */}
+        <AgronomyTipCard
+          onOpenBotanist={onOpenBotanist}
+          isSunlightMode={isSunlightMode}
+        />
 
         {/* 1. GARDEN VITAL SIGNS & DTM CAROUSEL (Vitality Rings & Moisture glance) */}
         <GardenVitalSignsCarousel

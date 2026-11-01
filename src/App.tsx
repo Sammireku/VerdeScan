@@ -24,6 +24,7 @@ import { queueRunner } from './lib/queue';
 import { type QueuedDiagnosis } from './lib/db';
 import { I18nProvider, useLocale } from './lib/i18n';
 import { AuthProvider, useAuth } from './lib/auth';
+import { startReminderScheduler } from './lib/notification-scheduler';
 
 function MainAppShell() {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
@@ -49,6 +50,7 @@ function MainAppShell() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [isHarvestOpen, setIsHarvestOpen] = useState(false);
+  const [botanistInitialQuery, setBotanistInitialQuery] = useState<string | undefined>(undefined);
 
   // High-Contrast Outdoor Sunlight Mode State
   const [isSunlightMode, setIsSunlightMode] = useState<boolean>(() => {
@@ -85,10 +87,14 @@ function MainAppShell() {
       setQueuedItems(items);
     });
 
+    // Start Daily Morning Agronomy Reminder Scheduler loop
+    const stopScheduler = startReminderScheduler();
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       unsubscribe();
+      stopScheduler();
     };
   }, []);
 
@@ -201,8 +207,9 @@ function MainAppShell() {
                 onGoHome={handleGoHome}
                 isSunlightMode={isSunlightMode}
                 onToggleSunlightMode={toggleSunlightMode}
-                onOpenBotanist={() => {
+                onOpenBotanist={(query?: string) => {
                   closeAllSubviews();
+                  setBotanistInitialQuery(query);
                   setActiveTab('ai_expert');
                 }}
               />
@@ -219,6 +226,7 @@ function MainAppShell() {
               <AiBotanistView
                 onOpenHistory={() => setIsHistoryOpen(true)}
                 onOpenScan={() => handleOpenScan('diagnose')}
+                initialQuery={botanistInitialQuery}
               />
             )}
 

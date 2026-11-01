@@ -23,6 +23,7 @@ import type { Plant } from '@verdescan/shared';
 export interface AiBotanistViewProps {
   onOpenHistory: () => void;
   onOpenScan?: () => void;
+  initialQuery?: string;
 }
 
 interface ChatMessage {
@@ -36,16 +37,24 @@ interface ChatMessage {
 
 const STORAGE_CHAT_KEY = 'verdescan_botanist_chat_history';
 
-export function AiBotanistView({ onOpenHistory, onOpenScan }: AiBotanistViewProps) {
+export function AiBotanistView({ onOpenHistory, onOpenScan, initialQuery }: AiBotanistViewProps) {
   const [isInChat, setIsInChat] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState(initialQuery || '');
   const [isTyping, setIsTyping] = useState(false);
   const [userPlants, setUserPlants] = useState<Plant[]>([]);
   const [expandedThoughts, setExpandedThoughts] = useState<Record<string, boolean>>({});
   const [weatherContext, setWeatherContext] = useState<WeatherContext | undefined>(undefined);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // If initialQuery is provided, switch to chat mode immediately
+  useEffect(() => {
+    if (initialQuery) {
+      setInputText(initialQuery);
+      setIsInChat(true);
+    }
+  }, [initialQuery]);
 
   // Load garden plants and local weather for grounding
   useEffect(() => {

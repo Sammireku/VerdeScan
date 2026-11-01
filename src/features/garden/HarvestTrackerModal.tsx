@@ -19,6 +19,7 @@ import {
 import { type HarvestTracker, type MaturityStage, type Plant } from '@verdescan/shared';
 import { getGardenPlants, subscribeGarden, addGardenPlant, saveCustomCrop } from '../../lib/garden';
 import { triggerHaptic } from '../../lib/haptics';
+import { D3HarvestProgressChart } from '../../components/D3HarvestProgressChart';
 
 interface HarvestTrackerModalProps {
   isOpen: boolean;
@@ -503,6 +504,13 @@ export function HarvestTrackerModal({
                   </div>
                 </div>
               </div>
+
+              {/* D3.js Interactive Crop Growth Progress & DTM Chart */}
+              <D3HarvestProgressChart
+                currentCrop={currentCrop}
+                allCrops={userTrackedCrops}
+                onSelectCrop={(id) => setSelectedCropId(id)}
+              />
 
               {/* Visual Ripening Cues Checklist */}
               <div className="bg-white rounded-3xl p-4 border border-[#E6EBE4] shadow-xs space-y-2.5">
